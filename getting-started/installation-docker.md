@@ -37,6 +37,8 @@ TODO(owner): On `main`, Compose builds the image on your server. The project pub
    cd feedback-pilgrim-dashboard
    ```
 
+   TODO(owner): This URL is the private app repository. The public repository can have a different owner and name. What is the clone URL of the public repository?
+
 2. Copy the example environment file:
 
    ```bash

@@ -84,4 +84,14 @@ vendor/bin/pint --test
 npm run build
 ```
 
-TODO(owner): The app `CONTRIBUTING.md` says that the CI runs `vendor/bin/pint --test`, but the `main` branch has no CI workflow. Which checks will the CI of the app run?
+## The CI
+
+`.github/workflows/ci.yml` runs on each push to `main` and on each pull request. It has three jobs:
+
+| Job | What it runs |
+|---|---|
+| Code style (Pint) | `vendor/bin/pint --test` on PHP 8.3 |
+| PHP tests | `cp .env.example .env`, `php artisan key:generate`, then `php artisan test` |
+| JS build | `npm ci` and `npm run build` on Node.js 24. Then it makes sure that `public/pilgrim.js` and `public/build/manifest.json` exist. |
+
+The CI does not run `npm run test:js`. Run it on your computer when you change the widget.

@@ -35,6 +35,8 @@ TODO(owner): The repository has a web server configuration only inside the Docke
    cd feedback-pilgrim-dashboard
    ```
 
+   TODO(owner): This URL is the private app repository. The public repository can have a different owner and name. What is the clone URL of the public repository?
+
 2. Install the PHP packages without the development packages:
 
    ```bash
