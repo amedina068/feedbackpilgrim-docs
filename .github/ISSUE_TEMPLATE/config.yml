@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: A problem with the app itself
+    url: https://github.com/amedina068/feedback-pilgrim-dashboard/issues
+    about: Read self-hosting/troubleshooting.md first. A bug in the app belongs in the app repository, not here.
