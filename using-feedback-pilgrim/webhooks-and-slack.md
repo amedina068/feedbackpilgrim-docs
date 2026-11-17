@@ -1,0 +1,111 @@
+---
+title: Webhooks and Slack
+description: Send signed events to your own server, and post messages to a Slack channel.
+order: 11
+---
+
+# Webhooks and Slack
+
+A project can send events to your own server with webhooks, and messages to a Slack channel. The queue worker sends both. Read [Queues and the scheduler](../self-hosting/queues-and-scheduler.md).
+
+## Webhooks
+
+Open **Settings > Webhooks**. A webhook has:
+
+| Field | Rules |
+|---|---|
+| URL | Required. A URL with 2048 characters or fewer. |
+| Events | One or more of the events below. |
+| Active | On or off. A paused webhook gets no events. |
+
+The app makes a signing secret of 40 characters for each webhook. The settings page shows the secret.
+
+### Events
+
+| Event | When |
+|---|---|
+| `post.created` | The app creates a post, from any source: the public site, the dashboard, the REST API or the MCP server. |
+| `post.status_changed` | A user moves a post to another stage in the dashboard. |
+| `post.completed` | A user moves a post to a `complete` stage in the dashboard, and the post was not complete before. |
+
+A move to a `complete` stage sends both `post.status_changed` and `post.completed`. A status change from the REST API or the MCP server sends no event.
+
+### The request
+
+The app sends a `POST` request with a JSON body:
+
+```json
+{
+  "event": "post.status_changed",
+  "data": {
+    "id": 42,
+    "title": "Add dark mode",
+    "content": "Users want a dark theme.",
+    "status": "in_progress",
+    "board_id": 1,
+    "contact_id": 7,
+    "stage": {
+      "id": 4,
+      "name": "In Progress",
+      "type": "active"
+    }
+  }
+}
+```
+
+The request has these headers:
+
+| Header | Value |
+|---|---|
+| `Content-Type` | `application/json` |
+| `X-FeedbackPilgrim-Event` | The event, for example `post.created` |
+| `X-FeedbackPilgrim-Signature` | The HMAC-SHA256 of the raw body, with the signing secret as the key, in hexadecimal |
+
+### Verify the signature
+
+Compute the HMAC-SHA256 of the raw body with your signing secret. Then compare it with the header. In a Laravel app:
+
+```php
+use Illuminate\Http\Request;
+
+Route::post('/feedback-pilgrim/webhook', function (Request $request) {
+    $expected = hash_hmac('sha256', $request->getContent(), config('services.feedback_pilgrim.webhook_secret'));
+
+    abort_unless(hash_equals($expected, (string) $request->header('X-FeedbackPilgrim-Signature')), 401);
+
+    $event = $request->input('event');
+    $post = $request->input('data');
+
+    // Handle the event.
+
+    return response()->noContent();
+});
+```
+
+Use the raw body. If you encode the parsed JSON again, the signature can be different.
+
+### Retries and the delivery log
+
+If your server answers with a `4xx` or `5xx` status, or if the connection fails, the app tries again. The app tries three times in total. It waits 10 seconds, then 60 seconds, between the tries.
+
+The app logs each try: the event, the status code, the result and the first 1000 characters of the response. The settings page shows the five newest tries for each webhook.
+
+## Slack
+
+1. In Slack, create an incoming webhook for a channel. Copy its URL.
+2. In the dashboard, open **Settings > Integrations**.
+3. Paste the URL in the Slack field. The URL must start with `https://hooks.slack.com/`.
+4. Save.
+
+To stop the messages, clear the field and save.
+
+The app posts these messages:
+
+| When | Message |
+|---|---|
+| The app creates a post | `🆕 New feedback: *<title>*` and the link of the post |
+| A user moves a post to another stage in the dashboard | `🔄 *<title>* moved to *<stage>*` and the link of the post |
+
+If Slack answers with a `4xx` or `5xx` status, the app tries again. It tries three times in total.
+
+The app makes the link with the host of the request that caused the message. A post from the public site gets a link on the public site. A stage change in the dashboard gets a link on the dashboard host.
