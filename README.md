@@ -1,0 +1,142 @@
+# Feedback Pilgrim documentation
+
+This repository holds the documentation of Feedback Pilgrim, a self-hosted feedback board. Customers post feature requests, vote and comment on a public site for each project. The team sorts the requests by the revenue of the customers who ask for them.
+
+Each Markdown file is one page. The folder of a file is the section of the page.
+
+TODO(owner): The code does not say where these pages will render. Each instance serves its own guides at `/documentation`, but that is a different set of pages. What is the public URL of this documentation, and which tool will render it?
+
+The code of the app is in a separate repository, [amedina068/feedback-pilgrim-dashboard](https://github.com/amedina068/feedback-pilgrim-dashboard). The docs describe the `main` branch of that code, and the check script compares the pages with it.
+
+## Pages
+
+### Getting started
+
+- [Introduction](getting-started/introduction.md)
+- [Install with Docker](getting-started/installation-docker.md)
+- [Install without Docker](getting-started/installation-manual.md)
+- [Configuration](getting-started/configuration.md)
+- [Upgrading](getting-started/upgrading.md)
+
+### Using Feedback Pilgrim
+
+- [Projects and the public site](using-feedback-pilgrim/projects-and-public-site.md)
+- [Boards](using-feedback-pilgrim/boards.md)
+- [Posts, votes and comments](using-feedback-pilgrim/posts-votes-and-comments.md)
+- [Stages and the roadmap](using-feedback-pilgrim/stages-and-roadmap.md)
+- [Tags](using-feedback-pilgrim/tags.md)
+- [Contacts and revenue](using-feedback-pilgrim/contacts.md)
+- [Release notes](using-feedback-pilgrim/release-notes.md)
+- [Testimonials](using-feedback-pilgrim/testimonials.md)
+- [Notifications and weekly reports](using-feedback-pilgrim/notifications-and-weekly-reports.md)
+- [The embeddable widget](using-feedback-pilgrim/widget.md)
+- [Webhooks and Slack](using-feedback-pilgrim/webhooks-and-slack.md)
+- [The admin area](using-feedback-pilgrim/admin-area.md)
+
+### REST API
+
+- [API overview](api/overview.md)
+- [Authentication](api/authentication.md)
+- [Init](api/init.md)
+- [Posts](api/posts.md)
+- [Release notes](api/release-notes.md)
+- [Contacts](api/contacts.md)
+- [Testimonials](api/testimonials.md)
+- [Tags](api/tags.md)
+- [OpenAPI and Postman](api/openapi.md)
+
+### MCP server
+
+- [MCP server](mcp/overview.md)
+- [Connect a client](mcp/connecting-clients.md)
+- [MCP tools reference](mcp/tools-reference.md)
+
+### Self-hosting
+
+- [Reverse proxy and TLS](self-hosting/reverse-proxy-and-tls.md)
+- [Backups](self-hosting/backups.md)
+- [Queues and the scheduler](self-hosting/queues-and-scheduler.md)
+- [Mail](self-hosting/mail.md)
+- [Accounts and registration](self-hosting/accounts-and-registration.md)
+- [Recover access](self-hosting/recover-access.md)
+- [Troubleshooting](self-hosting/troubleshooting.md)
+
+### Contributing to the app
+
+- [Architecture](contributing/architecture.md)
+- [Development setup](contributing/development-setup.md)
+- [Testing](contributing/testing.md)
+- [Release process](contributing/release-process.md)
+
+## Write a page
+
+1. Put the page in the folder of its section.
+2. Give the file a short name in kebab case, for example `webhooks-and-slack.md`.
+3. Start the file with front matter.
+4. Write the page in Simple English. Read [CONTRIBUTING.md](CONTRIBUTING.md).
+5. Add the page to the list in this README.
+6. Run the checks.
+
+### Front matter
+
+Each page starts with three fields:
+
+```yaml
+---
+title: Webhooks and Slack
+description: Send signed events to your own server, and post messages to a Slack channel.
+order: 10
+---
+```
+
+| Field | What it does |
+|---|---|
+| `title` | The title of the page in the navigation and in the browser tab. |
+| `description` | One sentence for the search results and the social cards. |
+| `order` | An integer. It sets the position of the page in its section, from low to high. |
+
+After the front matter, start the body with `# <title>`.
+
+### Links
+
+- Link to another page with a relative path and the `.md` extension, for example `[Backups](../self-hosting/backups.md)`.
+- Link to a heading with its slug, for example `[Identity verification](widget.md#identity-verification)`.
+- Use the example hosts `feedback.example.com` (the dashboard) and `acme.feedback.example.com` (the public site of a project).
+
+## Run the checks
+
+The check script needs Node 20 or later. It has no dependencies.
+
+To check the front matter and the links only:
+
+```bash
+node scripts/check-docs.mjs
+```
+
+To also check the artisan commands and the environment variables against the app, give the path of an app checkout:
+
+```bash
+FEEDBACKPILGRIM_APP_PATH=../feedback-pilgrim-dashboard node scripts/check-docs.mjs
+```
+
+The script then makes sure that:
+
+- each `php artisan <command>` in a page exists in the app,
+- each environment variable in the code of a page exists in `.env.example`, `config/`, `docker-compose.yml`, `Dockerfile`, `deploy/` or `phpunit.xml` of the app,
+- each internal link and each anchor resolves.
+
+If the app checkout has a `vendor/` folder, the script reads the command list from `php artisan list`. If not, it reads the command signatures in `app/Console/Commands` and a fixed list of framework commands.
+
+The CI runs the same script on each push and pull request. If the repository has the secret `FEEDBACKPILGRIM_APP_TOKEN`, the CI clones the app and runs all the checks. Without the secret, it runs the link check only.
+
+## The MCP tools reference
+
+`mcp/tools-reference.md` is written by hand from the tool classes in `app/Mcp/Tools` of the app. If a tool changes, update the page in the same pull request.
+
+## Open questions
+
+A paragraph that starts with `TODO(owner):` is a question for the maintainer. The code did not give the answer. To list the open questions, run:
+
+```bash
+grep -rn "TODO(owner):" --include=*.md .
+```
