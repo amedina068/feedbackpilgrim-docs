@@ -26,7 +26,6 @@ A release note is a changelog entry of a project. Read [Release notes](../using-
   "title": "New dashboard",
   "content": "The dashboard has a new layout.",
   "slug": "new-dashboard-20261117",
-  "status": "draft",
   "published_at": null,
   "created_at": "2026-11-17T09:00:00.000000Z",
   "updated_at": "2026-11-17T09:00:00.000000Z",
@@ -40,8 +39,7 @@ A release note is a changelog entry of a project. Read [Release notes](../using-
 |---|---|
 | `user_id` | The user who wrote the note. For a note from the API, the user of the token. |
 | `slug` | The path of the note on the public site: `/release-notes/<slug>`. |
-| `status` | `draft` or `published`. |
-| `published_at` | The publication date. The public site shows only notes with a publication date. |
+| `published_at` | The publication date. `null` means that the note is a draft. The public site shows only notes with a publication date. |
 
 The list and one note add `tags`, `votes` and `comments`. Create and update return `tags`.
 
@@ -83,7 +81,6 @@ curl 'https://feedback.example.com/api/public/v1/release-notes?published=false' 
       "title": "New dashboard",
       "content": "The dashboard has a new layout.",
       "slug": "new-dashboard-20261117",
-      "status": "draft",
       "published_at": null,
       "created_at": "2026-11-17T09:00:00.000000Z",
       "updated_at": "2026-11-17T09:00:00.000000Z",
@@ -142,7 +139,6 @@ curl https://feedback.example.com/api/public/v1/release-notes/7 \
   "title": "New dashboard",
   "content": "The dashboard has a new layout.",
   "slug": "new-dashboard-20261117",
-  "status": "draft",
   "published_at": null,
   "created_at": "2026-11-17T09:00:00.000000Z",
   "updated_at": "2026-11-17T09:00:00.000000Z",
@@ -170,9 +166,10 @@ POST /release-notes
 |---|---|---|---|
 | `title` | string | Yes | Maximum 255 characters |
 | `content` | string | Yes | Markdown is allowed. |
+| `published` | boolean | No | `true` publishes the note with the current time as the publication date. Without it, the note is a draft. |
 | `tags` | integer array | No | Tag IDs of the project |
 
-`201` returns the note. The note has the status `draft` and no publication date. The API cannot publish a note. Read [Release notes](../using-feedback-pilgrim/release-notes.md#release-notes-from-the-rest-api-or-the-mcp-server).
+`201` returns the note. Read [Release notes](../using-feedback-pilgrim/release-notes.md#release-notes-from-the-rest-api-or-the-mcp-server).
 
 ### Example request
 
@@ -196,7 +193,6 @@ curl -X POST https://feedback.example.com/api/public/v1/release-notes \
   "title": "New dashboard",
   "content": "The dashboard has a new layout.",
   "slug": "new-dashboard-20261117",
-  "status": "draft",
   "published_at": null,
   "created_at": "2026-11-17T09:00:00.000000Z",
   "updated_at": "2026-11-17T09:00:00.000000Z",
@@ -222,6 +218,7 @@ PATCH /release-notes/{id}
 |---|---|---|
 | `title` | string | Maximum 255 characters |
 | `content` | string | |
+| `published` | boolean | `true` publishes the note. If the note has no publication date, it gets the current time. `false` clears the publication date. |
 | `tags` | integer array | Tag IDs of the project. The list replaces all the tags of the note. |
 
 `200` returns the note.
@@ -248,7 +245,6 @@ curl -X PATCH https://feedback.example.com/api/public/v1/release-notes/7 \
   "title": "New dashboard layout",
   "content": "The dashboard has a new layout.",
   "slug": "new-dashboard-20261117",
-  "status": "draft",
   "published_at": null,
   "created_at": "2026-11-17T09:00:00.000000Z",
   "updated_at": "2026-11-17T09:00:00.000000Z",

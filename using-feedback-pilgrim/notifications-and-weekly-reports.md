@@ -21,7 +21,7 @@ The app sends one email to each voter, also if the contact voted more than one t
 
 The button in an email to a contact opens the public site and signs in the contact. The link stays valid for 7 days.
 
-A stage change from the REST API or the MCP server sends no email. Read [Stages and the roadmap](stages-and-roadmap.md#what-happens-when-a-post-changes-stage).
+A status change from the REST API or the MCP server sends the same emails. Read [Stages and the roadmap](stages-and-roadmap.md#what-happens-when-a-post-changes-stage).
 
 ## Emails to users
 

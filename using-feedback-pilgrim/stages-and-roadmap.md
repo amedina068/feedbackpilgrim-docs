@@ -74,9 +74,7 @@ These effects occur only when a user changes the stage in the dashboard, and onl
    - the app can ask the author for a testimonial. Read [Testimonials](testimonials.md#ask-for-a-testimonial-automatically).
 4. For any other stage, the author and each voter get an email with the new stage.
 
-A status change from the REST API or the MCP server moves the post to a new stage. But it sends no email, no webhook event and no Slack message.
-
-TODO(owner): Is it intended that a status change from the REST API or the MCP server sends no email to the voters and no webhook event?
+A status change from the REST API or the MCP server moves the post to the first stage of the matching type. Then the app does the same steps as for a stage change in the dashboard. If the status does not change, the app does nothing.
 
 ## The public roadmap
 

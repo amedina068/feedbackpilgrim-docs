@@ -28,4 +28,11 @@ The REST API and the MCP server can list, create, rename and delete tags. Read [
 
 The REST API and the MCP server can delete a tag. The app first removes the tag from its posts, contacts and release notes. Then it deletes the tag.
 
-TODO(owner): The dashboard has routes to create and show a tag, but no route to rename or delete a tag. Is rename and delete in the dashboard planned?
+## Rename or delete a tag in the dashboard
+
+Open **Tags**, then open a tag.
+
+- To rename the tag, change the title in the **Rename** field and click **Save**. Two tags of a project cannot have the same title.
+- To delete the tag, click **Delete tag** and confirm. The app removes the tag from its posts, contacts and release notes, then deletes it.
+
+The dashboard uses the same rules as the REST API and the MCP server.

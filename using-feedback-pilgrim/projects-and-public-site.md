@@ -27,21 +27,25 @@ When the app creates a project, it also creates:
 - the testimonial settings: rating off, automation off, and a default email text,
 - an admin contact for the user.
 
-A signed-in user can open `/onboarding/project` to create one more project.
-
-TODO(owner): The dashboard has no link to `/onboarding/project` after onboarding. Is this page the supported way for a user to add a second project?
+To create one more project, open the project selector at the top of the sidebar and select **New project**. The form at `/onboarding/project` opens. To go back without a new project, click **Cancel**.
 
 ## Switch projects
 
 A user can belong to more than one project. The project selector at the top of the sidebar changes the active project. The dashboard keeps the active project in the session. If the session has no project, the dashboard opens the first project of the user.
 
-Only the code that creates a project adds a user to it. No screen adds a second user to a project.
-
-TODO(owner): The app has no invitations, and no screen adds a user to an existing project. Do you plan team members for a project?
+Only the code that creates a project adds a user to it. No screen adds a second user to a project. Team members (invitations and roles) are a later feature.
 
 ## Rename a project
 
-TODO(owner): The route `PATCH /client` can change the name, the logo and the website domain of a project. But the form `profile/partials/update-client-information-form.blade.php` is not on any page. How does a user rename a project or upload its logo?
+1. In the dashboard, open **Settings > Project**.
+2. Change the fields.
+3. Click **Save project**.
+
+| Field | Rules |
+|---|---|
+| Name | Required. 255 characters or fewer. |
+| Website | Optional. 255 characters or fewer, for example `example.com`. The public site shows a "Back to" link to this address. Leave it empty to remove the link. |
+| Logo | Optional. JPG, PNG, GIF or WebP, 1 MB or less. SVG is not accepted. |
 
 The subdomain of a project cannot change after creation. No form or route changes it.
 
@@ -52,7 +56,7 @@ The public site of a project is at `https://<subdomain>.<APP_DOMAIN>`, for examp
 | Path | What it shows |
 |---|---|
 | `/` | The four newest release notes and the five newest published posts. |
-| `/posts` | The published posts. A contact can filter by a public board and sort by date or by votes. Completed posts are hidden unless the visitor asks for them. |
+| `/posts` | The published posts. A contact can filter by a public board and sort by date or by votes (`sort_by` is `created_at__DESC`, `created_at__ASC`, `votes_count__DESC` or `votes_count__ASC`). Another `sort_by` value shows the newest posts first. Completed posts are hidden unless the visitor asks for them. |
 | `/posts/{id}` | One published post with its comments and votes. |
 | `/roadmap` | The roadmap. Read [Stages and the roadmap](stages-and-roadmap.md#the-public-roadmap). |
 | `/release-notes` | The release notes that have a publication date. |
@@ -63,7 +67,7 @@ Anyone can read these pages. To post, vote, comment or write a testimonial, a co
 
 The public site shows only the posts of public boards. The board filter lists only public boards. A post of a private board does not show on `/`, `/posts`, `/roadmap` or the roadmap iframe. Its page returns 404, and a contact cannot vote or comment on it.
 
-If the project has a website domain in its settings, the public site shows a link back to that website.
+If the project has a website in **Settings > Project**, the public site shows a link back to that website.
 
 ## How a contact signs in
 
@@ -84,9 +88,7 @@ The **Public Site** link in the sidebar of the dashboard opens the public site o
 
 ## Custom domains
 
-The app can find a project from a custom domain instead of a subdomain. It looks for a project setting with the name `custom_domain` and the host as the value.
-
-TODO(owner): No screen or command sets the `custom_domain` setting. Do you support custom domains for the public site, and how does an operator set one?
+Custom domains are not supported. The public site of a project is only on its subdomain. A host outside `APP_DOMAIN` gets 404.
 
 ## Deactivated users
 

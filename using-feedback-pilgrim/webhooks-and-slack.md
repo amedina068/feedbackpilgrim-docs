@@ -28,7 +28,7 @@ The app makes a signing secret of 40 characters for each webhook. The settings p
 | `post.status_changed` | A user moves a post to another stage in the dashboard. |
 | `post.completed` | A user moves a post to a `complete` stage in the dashboard, and the post was not complete before. |
 
-A move to a `complete` stage sends both `post.status_changed` and `post.completed`. A status change from the REST API or the MCP server sends no event.
+A move to a `complete` stage sends both `post.status_changed` and `post.completed`. A status change from the REST API or the MCP server sends the same events.
 
 ### The request
 
@@ -59,19 +59,35 @@ The request has these headers:
 |---|---|
 | `Content-Type` | `application/json` |
 | `X-FeedbackPilgrim-Event` | The event, for example `post.created` |
-| `X-FeedbackPilgrim-Signature` | The HMAC-SHA256 of the raw body, with the signing secret as the key, in hexadecimal |
+| `X-FeedbackPilgrim-Delivery` | The ID of the delivery, a UUID. Each retry of the same delivery sends the same ID. |
+| `X-FeedbackPilgrim-Timestamp` | The Unix time of the try, in seconds. Each retry sends a new time. |
+| `X-FeedbackPilgrim-Signature-V2` | The HMAC-SHA256 of `<timestamp>.<raw body>`, with the signing secret as the key, in hexadecimal |
+| `X-FeedbackPilgrim-Signature` | Deprecated. The HMAC-SHA256 of the raw body only. The next release removes it. |
 
 ### Verify the signature
 
-Compute the HMAC-SHA256 of the raw body with your signing secret. Then compare it with the header. In a Laravel app:
+1. Join the value of `X-FeedbackPilgrim-Timestamp`, a `.` and the raw body.
+2. Compute the HMAC-SHA256 of this string with your signing secret.
+3. Compare the result with `X-FeedbackPilgrim-Signature-V2`. Use a comparison in constant time.
+4. If the timestamp is more than 5 minutes from the current time, reject the request.
+5. If you already handled the delivery ID, ignore the request.
+
+In a Laravel app:
 
 ```php
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 Route::post('/feedback-pilgrim/webhook', function (Request $request) {
-    $expected = hash_hmac('sha256', $request->getContent(), config('services.feedback_pilgrim.webhook_secret'));
+    $timestamp = (string) $request->header('X-FeedbackPilgrim-Timestamp');
+    $expected = hash_hmac('sha256', $timestamp.'.'.$request->getContent(), config('services.feedback_pilgrim.webhook_secret'));
 
-    abort_unless(hash_equals($expected, (string) $request->header('X-FeedbackPilgrim-Signature')), 401);
+    abort_unless(hash_equals($expected, (string) $request->header('X-FeedbackPilgrim-Signature-V2')), 401);
+    abort_if(abs(time() - (int) $timestamp) > 300, 401);
+
+    if (! Cache::add('feedback-pilgrim:'.$request->header('X-FeedbackPilgrim-Delivery'), true, now()->addDay())) {
+        return response()->noContent();
+    }
 
     $event = $request->input('event');
     $post = $request->input('data');
@@ -83,6 +99,8 @@ Route::post('/feedback-pilgrim/webhook', function (Request $request) {
 ```
 
 Use the raw body. If you encode the parsed JSON again, the signature can be different.
+
+The old `X-FeedbackPilgrim-Signature` header signs the body only, so it cannot stop a replayed request. If your receiver reads it, change the receiver to `X-FeedbackPilgrim-Signature-V2` before the next release.
 
 ### Retries and the delivery log
 
@@ -104,7 +122,7 @@ The app posts these messages:
 | When | Message |
 |---|---|
 | The app creates a post | `🆕 New feedback: *<title>*` and the link of the post |
-| A user moves a post to another stage in the dashboard | `🔄 *<title>* moved to *<stage>*` and the link of the post |
+| A post moves to another stage, from the dashboard, the REST API or the MCP server | `🔄 *<title>* moved to *<stage>*` and the link of the post |
 
 If Slack answers with a `4xx` or `5xx` status, the app tries again. It tries three times in total.
 

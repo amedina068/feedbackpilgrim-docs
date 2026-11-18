@@ -85,7 +85,7 @@ The result is the post with its tags and contact.
 
 ## update_post
 
-Updates a post. Only the arguments that you send change. A new `status` moves the post to the first stage of the matching type. It sends no email and no webhook event.
+Updates a post. Only the arguments that you send change. A new `status` moves the post to the first stage of the matching type. The app then sends the same emails, webhook events and Slack message as a stage change in the dashboard.
 
 | Argument | Type | Required | Description |
 |---|---|---|---|
@@ -131,12 +131,13 @@ Returns one release note with its tags, votes and comments.
 
 ## create_release_note
 
-Creates a release note with the status `draft` and no publication date. The user of the token is the author. Each call makes a new note.
+Creates a release note. Without `published: true`, the note is a draft with no publication date. The user of the token is the author. Each call makes a new note.
 
 | Argument | Type | Required | Description |
 |---|---|---|---|
 | `title` | string | Yes | The title, 255 characters or fewer. |
 | `content` | string | Yes | The text. Markdown is allowed. |
+| `published` | boolean | No | `true` publishes the note with the current time as the publication date. |
 | `tags` | integer array | No | Tag IDs of the project. |
 
 ## update_release_note
@@ -148,6 +149,7 @@ Updates a release note. Only the arguments that you send change.
 | `id` | integer | Yes | The ID of the release note. |
 | `title` | string | No | The new title. |
 | `content` | string | No | The new text. |
+| `published` | boolean | No | `true` publishes the note and keeps a publication date that exists. `false` clears the publication date. |
 | `tags` | integer array | No | Tag IDs. The list replaces all the tags of the note. |
 
 ## list_contacts
