@@ -74,7 +74,7 @@ Without a valid `userHash`, the widget does not sign in a contact that exists al
 1. Make sure that the queue worker runs.
 2. Open **Settings > Webhooks** and read the delivery log of the webhook.
 3. Make sure that the webhook is active and has the event.
-4. Remember that a status change from the REST API or the MCP server sends no event.
+4. If the receiver refuses the requests with `401`, make sure that it verifies `X-FeedbackPilgrim-Signature-V2` with the timestamp. Read [Verify the signature](../using-feedback-pilgrim/webhooks-and-slack.md#verify-the-signature).
 
 ## The weekly report does not arrive
 

@@ -327,7 +327,7 @@ Send only the fields to change.
 
 `200` returns the post.
 
-A new `status` moves the post to the first stage of the matching type. It sends no email to the voters, no webhook event and no Slack message.
+A new `status` moves the post to the first stage of the matching type. The app then sends the same emails, webhook events and Slack message as a stage change in the dashboard. Read [Stages and the roadmap](../using-feedback-pilgrim/stages-and-roadmap.md). If the status does not change, the app sends nothing.
 
 ### Example request
 

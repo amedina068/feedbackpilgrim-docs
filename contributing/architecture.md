@@ -43,7 +43,7 @@ The REST API and the MCP server call the same code:
 
 - **Actions** in `app/Actions/<Resource>/` hold the read and write behavior. Each action is an invokable class that takes a `ClientContext` and an input array.
 - **Rules** in `app/Rules/Public/*Rules.php` are the only source of validation for each resource.
-- `App\Support\ClientContext` resolves the project and the user from the token. A request never gives the project.
+- `App\Support\ClientContext` resolves the project and the user from the token. A request never gives the project. The dashboard calls some actions too (the release note edit page, the tag rename and delete). It builds the context from the session project with `ClientContext::fromDashboard()`.
 
 The controllers and the MCP tools are thin. A contract test (`tests/Feature/Mcp/ContractTest.php`) makes sure that the rules, the MCP tool schemas and `public/docs/openapi.json` agree.
 
@@ -53,7 +53,7 @@ The project (`Client`) is the tenant root. Each domain record except `User` has 
 
 | Surface | How the app finds the project |
 |---|---|
-| Public site and iframes | `IdentifyClientMiddleware` reads the host. A subdomain of `APP_DOMAIN` is the slug of a project. Another host can match a `custom_domain` setting. |
+| Public site and iframes | `IdentifyClientMiddleware` reads the host. A subdomain of `APP_DOMAIN` is the slug of a project. Another host gets 404. Custom domains are not supported. |
 | Dashboard | `GrabClientIdFromSessionMiddleware` reads `fp_client_id` from the session, or uses the first project of the user. Request input never sets the project. |
 | Widget `init` | `IdentifyWidgetClientMiddleware` reads the publishable key from the bearer header. |
 | REST API and MCP | `ApiClientMiddleware` builds a `ClientContext` from the `client_id` of the Sanctum token. |
@@ -89,7 +89,7 @@ User ──many-to-many (client_user)── Client
 | Notifications | `PostCommented`, `PostCompletedNotification`, `PostStatusChangedNotification`, `PostCreatedByContact`, `ReleaseNoteCommented`, `WeeklyReportNotification` |
 | Schedule | `fp:weekly` every Monday at 09:00, in `routes/console.php` |
 
-`App\Support\PostStageTransition` runs a stage change from the dashboard. It sends the notifications, the webhook events and the Slack message.
+`App\Support\PostStageTransition` runs a stage change from the dashboard, and a status change from the REST API or the MCP server (`UpdatePost`). It sends the notifications, the webhook events and the Slack message.
 
 ## Build targets
 

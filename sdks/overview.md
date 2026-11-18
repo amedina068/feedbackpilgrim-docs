@@ -18,7 +18,7 @@ Each SDK is a server-side client for one instance. The plan for the first versio
 - Retries with backoff after `429` and after server errors.
 - A helper that reads all the pages of a list.
 - A helper that makes the identity hash (`user_hash`) for the widget. Read [Widget init](../api/widget.md#the-identity-hash).
-- A helper that verifies the `X-FeedbackPilgrim-Signature` header of a webhook. Read [Verify the signature](../using-feedback-pilgrim/webhooks-and-slack.md#verify-the-signature).
+- A helper that verifies the `X-FeedbackPilgrim-Signature-V2` and `X-FeedbackPilgrim-Timestamp` headers of a webhook. Read [Verify the signature](../using-feedback-pilgrim/webhooks-and-slack.md#verify-the-signature).
 
 The SDKs do not call `POST /api/v1/init`. The widget script calls it from the browser.
 
