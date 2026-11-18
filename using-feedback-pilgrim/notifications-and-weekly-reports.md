@@ -37,7 +37,7 @@ The scheduler runs `php artisan fp:weekly` every Monday at 09:00. The app uses t
 
 The command does two steps:
 
-1. It computes the report of the current week for each project, and stores it.
+1. It computes the report of the previous week, from Monday to Sunday, for each project, and stores it.
 2. It sends the report by email to each user of each project.
 
 The report has these values:
@@ -51,9 +51,7 @@ The report has these values:
 | Top Post Creators | The contacts with the most posts. |
 | Most Active Commenters | The contacts with the most comments. |
 
-The week starts on Monday. The scheduled run is on Monday at 09:00, so the report holds the first nine hours of the new week.
-
-TODO(owner): `fp:weekly` reports the week that starts on the day of the run, so the Monday report holds only nine hours of data. Is the report meant to cover the previous week?
+The week starts on Monday. The scheduled run on Monday at 09:00 reports the full week that ended on Sunday. A run by hand also reports the previous week.
 
 To make and send the report by hand, run:
 

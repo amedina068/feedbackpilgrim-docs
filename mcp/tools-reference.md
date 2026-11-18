@@ -211,7 +211,7 @@ Lists the testimonials of the project. Each testimonial has its contact, votes a
 | `search` | string | No | Finds the text in the description or the user name. |
 | `approved` | boolean | No | `true` for the approved testimonials. If you omit it, or send `false`, the list holds the pending testimonials only. |
 | `rating` | integer | No | Only the testimonials with this rating, 1 to 5. |
-| `sort_by` | string | No | `created_at`, `updated_at`, `rating` or `approved_at`. |
+| `sort_by` | string | No | `created_at` (default), `updated_at`, `rating` or `approved_at`. |
 | `sort_direction` | string | No | `asc` or `desc` (default). |
 
 ## get_testimonial

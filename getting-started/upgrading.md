@@ -6,7 +6,9 @@ order: 5
 
 # Upgrading
 
-TODO(owner): The `main` branch has no version tags and no changelog. Which versions do you support, and can an instance skip versions when it upgrades?
+Only the latest release gets security fixes. The changelog of the app repository lists the changes and the breaking changes of each version. Read it before you upgrade.
+
+TODO(owner): Can an instance skip versions when it upgrades, for example from `0.1.0` to `0.3.0`?
 
 Make a backup before you upgrade. Read [Backups](../self-hosting/backups.md).
 
@@ -25,6 +27,21 @@ Make a backup before you upgrade. Read [Backups](../self-hosting/backups.md).
    ```
 
 The `web` service runs the new migrations when it starts. The `queue` and `scheduler` services start again after `web` is healthy.
+
+## Upgrade with the published image
+
+1. If `.env` sets `FEEDBACKPILGRIM_VERSION`, change it to the new version.
+2. Get the new image:
+
+   ```bash
+   docker compose -f docker-compose.image.yml pull
+   ```
+
+3. Start the stack again:
+
+   ```bash
+   docker compose -f docker-compose.image.yml up -d
+   ```
 
 ## Upgrade without Docker
 

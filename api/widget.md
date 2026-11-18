@@ -51,7 +51,7 @@ POST /api/v1/init
 | `contact.email` | string | Yes | The email of the user. You can also send the contact one level down, in `contact.contact`. |
 | `contact.name`, `contact.mrr`, `contact.ltv`, `contact.avatar` | | No | The same fields as in [Init](init.md#request). Other fields are custom attributes. |
 | `user_hash` | string | No | The identity hash. The project can require it. |
-| `releaseNotes.show` | boolean | With `releaseNotes` | If `true`, the response has the URL of the release notes iframe. |
+| `releaseNotes.show` | boolean | No | If `true`, the response has the URL of the release notes iframe. |
 | `releaseNotes.open` | boolean | No | If `true`, the widget opens the release notes when the contact has not seen the newest note. |
 | `testimonials` | object | No | Any object that is not empty adds the URL of the testimonials iframe. |
 

@@ -91,10 +91,11 @@ SMTP is the default mailer. Mailgun and Amazon SES are optional. Read [Mail](../
 
 The uploads go to the `public` disk, that is `storage/app/public`, through the storage link `public/storage`. `FILESYSTEM_DISK` is `local` in `.env.example`.
 
-TODO(owner): `config/filesystems.php` has an `s3` disk, and the media library reads `MEDIA_DISK`. Do you support S3 storage for the uploads, and which variables must an operator set?
+The app does not support S3 storage for the uploads. The configuration has an `s3` disk, but the S3 driver needs the package `league/flysystem-aws-s3-v3`. The app does not include this package, so each read or write on the `s3` disk fails. Do not set `FILESYSTEM_DISK` or `MEDIA_DISK` to `s3`.
 
 ## Docker only
 
 | Variable | Default | What it does |
 |---|---|---|
 | `APP_PORT` | `8080` | The port of the host that Compose publishes for the `web` service. |
+| `APP_BIND` | `127.0.0.1` | The interface of the host for `APP_PORT`. With `127.0.0.1`, only a proxy on the same host can reach the app. Set `0.0.0.0` to accept traffic from other hosts. |

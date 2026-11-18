@@ -18,7 +18,19 @@ The repository has a `Dockerfile` and a `docker-compose.yml`. The Compose stack 
 
 The app image is based on `serversideup/php:8.3-fpm-nginx-v5.1.2`. The build adds the PHP extensions `gd` and `exif`. It also builds the dashboard assets and `public/pilgrim.js` with Node.js 24.
 
-TODO(owner): On `main`, Compose builds the image on your server. The project publishes no prebuilt image. Will you publish an image, and in which registry?
+Each release also publishes a prebuilt image to the GitHub Container Registry, for `linux/amd64` and `linux/arm64`. The file `docker-compose.image.yml` is the same stack, but it uses this image and does not build:
+
+1. Put `docker-compose.image.yml` and `.env.example` in an empty folder.
+2. Do steps 2 to 5 of the installation below.
+3. Start the stack:
+
+   ```bash
+   docker compose -f docker-compose.image.yml up -d
+   ```
+
+4. Do steps 7 to 9 of the installation below. Add `-f docker-compose.image.yml` to each `docker compose` command.
+
+`FEEDBACKPILGRIM_VERSION` selects the image tag. The default is `latest`. To stay on one version, set an exact version, for example `FEEDBACKPILGRIM_VERSION=0.1.0`.
 
 ## Requirements
 
@@ -152,7 +164,7 @@ Make a backup of the volumes and of `.env`. Read [Backups](../self-hosting/backu
 
 ## Ports and health checks
 
-The `web` service answers on port 8080 of the host. To change the port, set `APP_PORT` in `.env`.
+The `web` service answers on port 8080 of the loopback interface (`127.0.0.1`) of the host. Thus only a proxy on the same host can reach it. To change the port, set `APP_PORT` in `.env`. To accept traffic from other hosts, set `APP_BIND=0.0.0.0`.
 
 The stack does not serve HTTPS. Put a reverse proxy with TLS in front of it. Read [Reverse proxy and TLS](../self-hosting/reverse-proxy-and-tls.md).
 

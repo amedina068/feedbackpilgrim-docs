@@ -42,7 +42,7 @@ The app trusts these headers from any proxy: `X-Forwarded-For`, `X-Forwarded-Hos
 
 WARNING: Do not expose port 8080 to the internet. The app trusts the forwarded headers from any client. A client that can reach the port directly can send a false host or scheme. Allow the port only from the reverse proxy, for example with a firewall rule.
 
-Compose publishes the port on all the interfaces of the host. If the proxy runs on the same host, block the port in the firewall.
+Compose publishes the port on the loopback interface (`127.0.0.1`) of the host. Thus only a proxy on the same host can reach the port. If the proxy is on another host, set `APP_BIND=0.0.0.0` in `.env`. Then allow the port only from the proxy with a firewall rule.
 
 ## Values in `.env`
 
