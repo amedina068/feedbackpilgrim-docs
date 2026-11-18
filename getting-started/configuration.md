@@ -87,13 +87,6 @@ The repository has no migration for a `sessions` table or a `jobs` table. Thus t
 
 SMTP is the default mailer. Mailgun and Amazon SES are optional. Read [Mail](../self-hosting/mail.md) for the variables.
 
-## Analytics
-
-| Variable | Default in `.env.example` | What it does |
-|---|---|---|
-| `PLAUSIBLE_DOMAIN` | empty | If set, the dashboard and the public sites load Plausible. If empty, the pages load no analytics script. |
-| `PLAUSIBLE_SCRIPT_URL` | `https://plausible.io/js/script.js` | The script URL. Change it for a self-hosted Plausible. |
-
 ## Files
 
 The uploads go to the `public` disk, that is `storage/app/public`, through the storage link `public/storage`. `FILESYSTEM_DISK` is `local` in `.env.example`.
