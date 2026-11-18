@@ -31,7 +31,7 @@ The API cannot delete a contact.
   "avatar": "https://feedback.example.com/storage/avatars/7/avatar.png",
   "mrr": 49,
   "ltv": 1200,
-  "top_customer": false,
+  "top_customer": 0,
   "created_at": "2026-11-17T09:00:00.000000Z",
   "updated_at": "2026-11-17T09:00:00.000000Z",
   "tags": [],
@@ -65,6 +65,72 @@ GET /contacts
 
 The list also holds the admin contacts of the users.
 
+### Example request
+
+```bash
+curl 'https://feedback.example.com/api/public/v1/contacts?sort_by=mrr&sort_direction=desc' \
+  -H 'Authorization: Bearer <your-token>' \
+  -H 'Accept: application/json'
+```
+
+### Example response
+
+`200`:
+
+```json
+{
+  "current_page": 1,
+  "data": [
+    {
+      "id": 7,
+      "uuid": "4f6c2a5e-7d3b-4d1e-9c8a-2b1f0e9d8c7b",
+      "user_id": null,
+      "client_id": 1,
+      "name": "Jane Doe",
+      "email": "jane@example.com",
+      "notes": null,
+      "avatar": "https://feedback.example.com/storage/avatars/7/avatar.png",
+      "mrr": 49,
+      "ltv": 1200,
+      "top_customer": 0,
+      "created_at": "2026-11-17T09:00:00.000000Z",
+      "updated_at": "2026-11-17T09:00:00.000000Z",
+      "tags": [
+        {
+          "id": 3,
+          "client_id": 1,
+          "title": "ui",
+          "created_at": "2026-11-17T09:00:00.000000Z",
+          "updated_at": "2026-11-17T09:00:00.000000Z"
+        }
+      ],
+      "votes": [
+        {
+          "id": 90,
+          "contact_id": 7,
+          "votable_type": "App\\Models\\Post",
+          "votable_id": 42,
+          "created_at": "2026-11-17T09:00:00.000000Z",
+          "updated_at": "2026-11-17T09:00:00.000000Z"
+        }
+      ],
+      "plan": "pro"
+    }
+  ],
+  "first_page_url": "https://feedback.example.com/api/public/v1/contacts?page=1",
+  "from": 1,
+  "last_page": 1,
+  "last_page_url": "https://feedback.example.com/api/public/v1/contacts?page=1",
+  "links": [],
+  "next_page_url": null,
+  "path": "https://feedback.example.com/api/public/v1/contacts",
+  "per_page": 15,
+  "prev_page_url": null,
+  "to": 1,
+  "total": 1
+}
+```
+
 ## Get a contact
 
 ```http
@@ -72,6 +138,56 @@ GET /contacts/{id}
 ```
 
 Returns the contact with `tags` and `votes`.
+
+### Example request
+
+```bash
+curl https://feedback.example.com/api/public/v1/contacts/7 \
+  -H 'Authorization: Bearer <your-token>' \
+  -H 'Accept: application/json'
+```
+
+### Example response
+
+`200`:
+
+```json
+{
+  "id": 7,
+  "uuid": "4f6c2a5e-7d3b-4d1e-9c8a-2b1f0e9d8c7b",
+  "user_id": null,
+  "client_id": 1,
+  "name": "Jane Doe",
+  "email": "jane@example.com",
+  "notes": null,
+  "avatar": "https://feedback.example.com/storage/avatars/7/avatar.png",
+  "mrr": 49,
+  "ltv": 1200,
+  "top_customer": 0,
+  "created_at": "2026-11-17T09:00:00.000000Z",
+  "updated_at": "2026-11-17T09:00:00.000000Z",
+  "tags": [
+    {
+      "id": 3,
+      "client_id": 1,
+      "title": "ui",
+      "created_at": "2026-11-17T09:00:00.000000Z",
+      "updated_at": "2026-11-17T09:00:00.000000Z"
+    }
+  ],
+  "votes": [
+    {
+      "id": 90,
+      "contact_id": 7,
+      "votable_type": "App\\Models\\Post",
+      "votable_id": 42,
+      "created_at": "2026-11-17T09:00:00.000000Z",
+      "updated_at": "2026-11-17T09:00:00.000000Z"
+    }
+  ],
+  "plan": "pro"
+}
+```
 
 ## Create or update a contact
 
@@ -106,6 +222,48 @@ For an existing contact, the app merges the new custom attributes with the old o
 | `201` | The app created a contact. |
 | `200` | The app updated the contact with this email. |
 
+### Example request
+
+```bash
+curl -X POST https://feedback.example.com/api/public/v1/contacts \
+  -H 'Authorization: Bearer <your-token>' \
+  -H 'Accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{"name":"Jane Doe","email":"jane@example.com","mrr":49,"ltv":1200,"tags":[3],"plan":"pro"}'
+```
+
+### Example response
+
+`201`:
+
+```json
+{
+  "id": 7,
+  "uuid": "4f6c2a5e-7d3b-4d1e-9c8a-2b1f0e9d8c7b",
+  "user_id": null,
+  "client_id": 1,
+  "name": "Jane Doe",
+  "email": "jane@example.com",
+  "notes": null,
+  "avatar": "https://feedback.example.com/storage/avatars/7/avatar.png",
+  "mrr": 49,
+  "ltv": 1200,
+  "top_customer": 0,
+  "created_at": "2026-11-17T09:00:00.000000Z",
+  "updated_at": "2026-11-17T09:00:00.000000Z",
+  "tags": [
+    {
+      "id": 3,
+      "client_id": 1,
+      "title": "ui",
+      "created_at": "2026-11-17T09:00:00.000000Z",
+      "updated_at": "2026-11-17T09:00:00.000000Z"
+    }
+  ],
+  "plan": "pro"
+}
+```
+
 ## Update a contact
 
 ```http
@@ -125,19 +283,49 @@ This endpoint does not change the custom attributes. To change them, use `POST /
 
 `200` returns the contact.
 
-## Examples
+### Example request
 
 ```bash
-curl 'https://feedback.example.com/api/public/v1/contacts?sort_by=mrr&sort_direction=desc' \
-  -H 'Authorization: Bearer <your-token>' \
-  -H 'Accept: application/json'
-
-curl -X POST https://feedback.example.com/api/public/v1/contacts \
+curl -X PATCH https://feedback.example.com/api/public/v1/contacts/7 \
   -H 'Authorization: Bearer <your-token>' \
   -H 'Accept: application/json' \
   -H 'Content-Type: application/json' \
-  -d '{"name":"Jane Doe","email":"jane@example.com","mrr":49,"ltv":1200,"plan":"pro"}'
+  -d '{"mrr":99}'
 ```
+
+### Example response
+
+`200`:
+
+```json
+{
+  "id": 7,
+  "uuid": "4f6c2a5e-7d3b-4d1e-9c8a-2b1f0e9d8c7b",
+  "user_id": null,
+  "client_id": 1,
+  "name": "Jane Doe",
+  "email": "jane@example.com",
+  "notes": null,
+  "avatar": "https://feedback.example.com/storage/avatars/7/avatar.png",
+  "mrr": 99,
+  "ltv": 1200,
+  "top_customer": 0,
+  "created_at": "2026-11-17T09:00:00.000000Z",
+  "updated_at": "2026-11-17T09:00:00.000000Z",
+  "tags": [
+    {
+      "id": 3,
+      "client_id": 1,
+      "title": "ui",
+      "created_at": "2026-11-17T09:00:00.000000Z",
+      "updated_at": "2026-11-17T09:00:00.000000Z"
+    }
+  ],
+  "plan": "pro"
+}
+```
+
+## PHP example
 
 Send the revenue of each customer from your billing code, in PHP:
 

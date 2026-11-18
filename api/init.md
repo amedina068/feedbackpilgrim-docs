@@ -44,7 +44,7 @@ The endpoint does not check an identity hash. The API token proves that the requ
 }
 ```
 
-`200` with `{}`, if the request had no contact email.
+`200` with an empty JSON array (`[]`), if the request had no contact email.
 
 The link signs in the contact on the public site of the project. It stays valid for 24 hours. Make a new link for each page view. Do not store it.
 

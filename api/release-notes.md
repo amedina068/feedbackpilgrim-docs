@@ -60,6 +60,60 @@ GET /release-notes
 | `sort_by` | query | `created_at` (default), `updated_at`, `title` or `published_at`. |
 | `sort_direction` | query | `desc` (default) or `asc`. |
 
+### Example request
+
+```bash
+curl 'https://feedback.example.com/api/public/v1/release-notes?published=false' \
+  -H 'Authorization: Bearer <your-token>' \
+  -H 'Accept: application/json'
+```
+
+### Example response
+
+`200`:
+
+```json
+{
+  "current_page": 1,
+  "data": [
+    {
+      "id": 7,
+      "client_id": 1,
+      "user_id": 1,
+      "title": "New dashboard",
+      "content": "The dashboard has a new layout.",
+      "slug": "new-dashboard-20261117",
+      "status": "draft",
+      "published_at": null,
+      "created_at": "2026-11-17T09:00:00.000000Z",
+      "updated_at": "2026-11-17T09:00:00.000000Z",
+      "tags": [
+        {
+          "id": 3,
+          "client_id": 1,
+          "title": "ui",
+          "created_at": "2026-11-17T09:00:00.000000Z",
+          "updated_at": "2026-11-17T09:00:00.000000Z"
+        }
+      ],
+      "votes": [],
+      "comments": []
+    }
+  ],
+  "first_page_url": "https://feedback.example.com/api/public/v1/release-notes?page=1",
+  "from": 1,
+  "last_page": 1,
+  "last_page_url": "https://feedback.example.com/api/public/v1/release-notes?page=1",
+  "links": [],
+  "next_page_url": null,
+  "path": "https://feedback.example.com/api/public/v1/release-notes",
+  "per_page": 15,
+  "prev_page_url": null,
+  "to": 1,
+  "total": 1
+}
+```
+
 ## Get a release note
 
 ```http
@@ -67,6 +121,44 @@ GET /release-notes/{id}
 ```
 
 Returns the note with `tags`, `votes` and `comments`.
+
+### Example request
+
+```bash
+curl https://feedback.example.com/api/public/v1/release-notes/7 \
+  -H 'Authorization: Bearer <your-token>' \
+  -H 'Accept: application/json'
+```
+
+### Example response
+
+`200`:
+
+```json
+{
+  "id": 7,
+  "client_id": 1,
+  "user_id": 1,
+  "title": "New dashboard",
+  "content": "The dashboard has a new layout.",
+  "slug": "new-dashboard-20261117",
+  "status": "draft",
+  "published_at": null,
+  "created_at": "2026-11-17T09:00:00.000000Z",
+  "updated_at": "2026-11-17T09:00:00.000000Z",
+  "tags": [
+    {
+      "id": 3,
+      "client_id": 1,
+      "title": "ui",
+      "created_at": "2026-11-17T09:00:00.000000Z",
+      "updated_at": "2026-11-17T09:00:00.000000Z"
+    }
+  ],
+  "votes": [],
+  "comments": []
+}
+```
 
 ## Create a release note
 
@@ -82,6 +174,44 @@ POST /release-notes
 
 `201` returns the note. The note has the status `draft` and no publication date. The API cannot publish a note. Read [Release notes](../using-feedback-pilgrim/release-notes.md#release-notes-from-the-rest-api-or-the-mcp-server).
 
+### Example request
+
+```bash
+curl -X POST https://feedback.example.com/api/public/v1/release-notes \
+  -H 'Authorization: Bearer <your-token>' \
+  -H 'Accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{"title":"New dashboard","content":"The dashboard has a new layout.","tags":[3]}'
+```
+
+### Example response
+
+`201`:
+
+```json
+{
+  "id": 7,
+  "client_id": 1,
+  "user_id": 1,
+  "title": "New dashboard",
+  "content": "The dashboard has a new layout.",
+  "slug": "new-dashboard-20261117",
+  "status": "draft",
+  "published_at": null,
+  "created_at": "2026-11-17T09:00:00.000000Z",
+  "updated_at": "2026-11-17T09:00:00.000000Z",
+  "tags": [
+    {
+      "id": 3,
+      "client_id": 1,
+      "title": "ui",
+      "created_at": "2026-11-17T09:00:00.000000Z",
+      "updated_at": "2026-11-17T09:00:00.000000Z"
+    }
+  ]
+}
+```
+
 ## Update a release note
 
 ```http
@@ -96,19 +226,71 @@ PATCH /release-notes/{id}
 
 `200` returns the note.
 
-## Examples
+### Example request
 
 ```bash
-curl 'https://feedback.example.com/api/public/v1/release-notes?published=true' \
-  -H 'Authorization: Bearer <your-token>' \
-  -H 'Accept: application/json'
-
-curl -X POST https://feedback.example.com/api/public/v1/release-notes \
+curl -X PATCH https://feedback.example.com/api/public/v1/release-notes/7 \
   -H 'Authorization: Bearer <your-token>' \
   -H 'Accept: application/json' \
   -H 'Content-Type: application/json' \
-  -d '{"title":"New dashboard","content":"The dashboard has a new layout."}'
+  -d '{"title":"New dashboard layout"}'
 ```
+
+### Example response
+
+`200`:
+
+```json
+{
+  "id": 7,
+  "client_id": 1,
+  "user_id": 1,
+  "title": "New dashboard layout",
+  "content": "The dashboard has a new layout.",
+  "slug": "new-dashboard-20261117",
+  "status": "draft",
+  "published_at": null,
+  "created_at": "2026-11-17T09:00:00.000000Z",
+  "updated_at": "2026-11-17T09:00:00.000000Z",
+  "tags": [
+    {
+      "id": 3,
+      "client_id": 1,
+      "title": "ui",
+      "created_at": "2026-11-17T09:00:00.000000Z",
+      "updated_at": "2026-11-17T09:00:00.000000Z"
+    }
+  ]
+}
+```
+
+## Delete a release note
+
+```http
+DELETE /release-notes/{id}
+```
+
+The API cannot delete a release note.
+
+### Example request
+
+```bash
+curl -X DELETE https://feedback.example.com/api/public/v1/release-notes/7 \
+  -H 'Authorization: Bearer <your-token>' \
+  -H 'Accept: application/json'
+```
+
+### Example response
+
+`405`:
+
+```json
+{
+  "message": "Method not allowed"
+}
+```
+
+## PHP example
 
 Create a draft from your deploy script, in PHP:
 

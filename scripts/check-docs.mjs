@@ -5,10 +5,13 @@
 // 2. Each internal link resolves to a page, and each anchor to a heading.
 // 3. Each `php artisan <command>` in a page exists in the app.
 // 4. Each environment variable in the code of a page exists in the app.
+// 5. Each endpoint on an API page is an operation of the OpenAPI spec of the
+//    app, and each operation of the spec is on an API page.
 //
-// Checks 3 and 4 need the source of the app. Set FEEDBACKPILGRIM_APP_PATH to
+// Checks 3, 4 and 5 need the source of the app. Set FEEDBACKPILGRIM_APP_PATH to
 // the app folder. If FEEDBACKPILGRIM_APP_PATH is not set, the script runs
-// checks 1 and 2 only. If the app folder has `vendor/`, the script reads the
+// checks 1 and 2 only. Check 5 reads `public/docs/openapi.json` of the app,
+// the JSON copy of `docs/api/openapi.yaml`. If the app folder has `vendor/`, the script reads the
 // commands from `php artisan list`. If not, it reads the signatures in
 // `app/Console/Commands` and a fixed list of framework commands.
 //
@@ -17,7 +20,7 @@
 
 import { execFileSync } from 'node:child_process';
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
-import { dirname, join, relative, resolve } from 'node:path';
+import { dirname, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -46,6 +49,10 @@ const FRAMEWORK_COMMANDS = [
   'schedule:run', 'schedule:work', 'serve', 'storage:link', 'test', 'tinker',
   'up', 'view:cache', 'view:clear', 'vendor:publish', 'package:discover',
 ];
+
+// The pages write a REST API path without its prefix, for example `/posts/{id}`.
+const API_PREFIX = '/api/public/v1';
+const HTTP_METHODS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
 
 const errors = [];
 const warnings = [];
@@ -181,6 +188,7 @@ for (const [file, text] of sources) {
 
 let commandCount = 0;
 let envCount = 0;
+let endpointCount = 0;
 
 if (appPath) {
   if (!existsSync(join(appPath, 'artisan'))) {
@@ -226,8 +234,100 @@ if (appPath) {
       }
     }
   }
+
+  checkEndpoints(appPath);
 } else {
-  warnings.push('FEEDBACKPILGRIM_APP_PATH is not set. The command and environment variable checks did not run.');
+  warnings.push('FEEDBACKPILGRIM_APP_PATH is not set. The command, environment variable and endpoint checks did not run.');
+}
+
+// ---------------------------------------------------------------------------
+// Check 5: endpoints on the API pages
+// ---------------------------------------------------------------------------
+
+/**
+ * One key for an endpoint, for example "PATCH /api/public/v1/posts/{}". The
+ * names of path parameters and the IDs in example URLs become `{}`. Laravel
+ * accepts PUT for each PATCH route, and the spec documents PATCH only.
+ */
+function endpointKey(method, path) {
+  const fullPath = path.startsWith('/api/') ? path : API_PREFIX + path;
+  const normalized = fullPath
+    .split('?')[0]
+    .replace(/\/+$/, '')
+    .split('/')
+    .map((segment) => (/^\{[^}]+\}$/.test(segment) || /^\d+$/.test(segment) ? '{}' : segment))
+    .join('/');
+  return `${method === 'PUT' ? 'PATCH' : method} ${normalized}`;
+}
+
+/** The endpoints of the spec. The old spec put `/api/public/v1` in `servers`. */
+function specEndpoints(spec) {
+  const server = spec.servers?.[0]?.url ?? '';
+  const prefix = server.startsWith('/') ? server.replace(/\/+$/, '') : '';
+  const keys = new Set();
+  for (const [path, item] of Object.entries(spec.paths ?? {})) {
+    for (const method of Object.keys(item)) {
+      if (HTTP_METHODS.includes(method.toUpperCase())) keys.add(endpointKey(method.toUpperCase(), prefix + path));
+    }
+  }
+  return keys;
+}
+
+/** The endpoints that a page names: HTTP blocks, table rows and curl commands. */
+function pageEndpoints(text) {
+  const found = [];
+  const add = (number, method, path) => found.push({ number, key: endpointKey(method, path) });
+  let fenceLanguage = null;
+
+  for (const line of lines(text)) {
+    const fence = line.text.match(/^\s*```(\w*)/);
+    if (fence) {
+      fenceLanguage = fenceLanguage === null ? fence[1] : null;
+      continue;
+    }
+
+    if (fenceLanguage === 'http') {
+      const request = line.text.match(/^(GET|POST|PUT|PATCH|DELETE) (\/\S*)/);
+      if (request) add(line.number, request[1], request[2]);
+      continue;
+    }
+
+    if (fenceLanguage !== null) {
+      const curl = line.text.match(/^curl\s+(?:-X\s+(GET|POST|PUT|PATCH|DELETE)\s+)?['"]?https?:\/\/[^/\s'"]+(\/api\/[^\s'"]*)/);
+      if (curl) add(line.number, curl[1] ?? 'GET', curl[2]);
+      continue;
+    }
+
+    const row = line.text.match(/^\|\s*((?:`(?:GET|POST|PUT|PATCH|DELETE)`(?:,\s*)?)+)\s*\|\s*`(\/[^`]*)`\s*\|/);
+    if (row) {
+      for (const method of row[1].matchAll(/`(\w+)`/g)) add(line.number, method[1], row[2]);
+    }
+  }
+  return found;
+}
+
+function checkEndpoints(app) {
+  const specFile = join(app, 'public', 'docs', 'openapi.json');
+  if (!existsSync(specFile)) {
+    warnings.push('The app has no public/docs/openapi.json, so the endpoint check did not run.');
+    return;
+  }
+
+  const spec = specEndpoints(JSON.parse(readFileSync(specFile, 'utf8')));
+  const documented = new Set();
+
+  for (const [file, text] of sources) {
+    if (!relative(root, file).startsWith(`api${sep}`)) continue;
+    for (const { number, key } of pageEndpoints(text)) {
+      endpointCount++;
+      documented.add(key);
+      if (!spec.has(key)) fail(file, number, `endpoint is not in the OpenAPI spec of the app: ${key}`);
+    }
+  }
+
+  for (const key of spec) {
+    if (!documented.has(key)) errors.push(`api/: the OpenAPI spec has an endpoint that no API page names: ${key}`);
+  }
 }
 
 function loadCommands(app) {
@@ -333,7 +433,9 @@ for (const error of errors) console.error(error);
 
 console.log(
   `Checked ${files.length} files: ${linkCount} internal links, ` +
-    (appPath ? `${commandCount} artisan commands, ${envCount} environment variables.` : 'commands and variables skipped.'),
+    (appPath
+      ? `${commandCount} artisan commands, ${envCount} environment variables, ${endpointCount} API endpoints.`
+      : 'commands, variables and endpoints skipped.'),
 );
 
 if (errors.length > 0) {
