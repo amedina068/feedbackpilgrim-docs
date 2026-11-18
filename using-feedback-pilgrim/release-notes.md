@@ -45,4 +45,6 @@ The iframe is at `/iframe/release-notes` on the public site.
 
 When a contact comments on a release note, the user who wrote the note gets an email. Read [Notifications and weekly reports](notifications-and-weekly-reports.md).
 
-TODO(owner): The dashboard has no route to edit or delete a release note. Is this planned?
+The page of a note has an **Edit** link, but the dashboard has no edit page. The link returns 404.
+
+TODO(owner): The dashboard has no route to edit or delete a release note. Is this planned? Until then, do you want to remove the **Edit** link?

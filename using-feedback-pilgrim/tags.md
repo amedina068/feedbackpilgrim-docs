@@ -26,8 +26,6 @@ The REST API and the MCP server can list, create, rename and delete tags. Read [
 - To set the tags of a record, send `tags` with a list of tag IDs. The list replaces all the tags of the record.
 - To filter a list of posts, contacts or release notes, send `tag` with the title of a tag.
 
-The REST API and the MCP server can delete a tag. The app first removes the tag from its posts and contacts. Then it deletes the tag.
-
-TODO(owner): The delete action of a tag removes the tag from posts and contacts, but not from release notes. Is this intended?
+The REST API and the MCP server can delete a tag. The app first removes the tag from its posts, contacts and release notes. Then it deletes the tag.
 
 TODO(owner): The dashboard has routes to create and show a tag, but no route to rename or delete a tag. Is rename and delete in the dashboard planned?

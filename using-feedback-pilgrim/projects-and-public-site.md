@@ -61,9 +61,7 @@ The public site of a project is at `https://<subdomain>.<APP_DOMAIN>`, for examp
 
 Anyone can read these pages. To post, vote, comment or write a testimonial, a contact must be signed in.
 
-WARNING: The board filter lists only public boards. But without a board filter, `/`, `/posts` and `/roadmap` show the published posts of all boards, also private boards.
-
-TODO(owner): Is it correct that the public site shows the published posts of private boards when the visitor does not choose a board?
+The public site shows only the posts of public boards. The board filter lists only public boards. A post of a private board does not show on `/`, `/posts`, `/roadmap` or the roadmap iframe. Its page returns 404, and a contact cannot vote or comment on it.
 
 If the project has a website domain in its settings, the public site shows a link back to that website.
 

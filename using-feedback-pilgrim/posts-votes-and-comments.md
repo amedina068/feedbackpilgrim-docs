@@ -40,8 +40,6 @@ The dashboard and the public site show the attachments of a post.
 - **Archive** hides the post from the post list of the dashboard and from the roadmap.
 - **Unarchive** shows the post again.
 
-TODO(owner): `PostArchiveController::destroy` loads the first post of the project, not the post in the URL. Thus **Unarchive** can change the wrong post. Is this a known bug?
-
 The post list of the public site does not filter archived posts. A published post that is archived still shows on `/posts`.
 
 A post from the dashboard, the REST API or the MCP server is not published. Publish it in the dashboard before customers can see it.

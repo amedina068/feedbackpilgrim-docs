@@ -48,9 +48,7 @@ The app has the AWS SDK for PHP.
 
 ## Postmark
 
-`config/mail.php` and `config/services.php` have a `postmark` mailer and `POSTMARK_TOKEN`. But `composer.json` does not require the package `symfony/postmark-mailer`, so the `postmark` mailer does not work.
-
-TODO(owner): The configuration has a `postmark` mailer, but the app does not require `symfony/postmark-mailer`. Do you support Postmark?
+The app does not support Postmark. The configuration has a `postmark` mailer and `POSTMARK_TOKEN`, but the mailer needs the package `symfony/postmark-mailer`. The app does not include this package. If you set `MAIL_MAILER=postmark`, each email fails.
 
 ## Test without a mail server
 

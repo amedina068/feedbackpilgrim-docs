@@ -55,13 +55,13 @@ GET /testimonials
 | Parameter | In | Description |
 |---|---|---|
 | `page`, `per_page` | query | Pagination. Read [API overview](overview.md#lists-and-pagination). |
-| `approved` | query | Send `approved=1` for the approved testimonials. Without `approved`, the list holds the pending testimonials only. |
+| `approved` | query | `true` or `1` for the approved testimonials. `false` or `0` for the pending testimonials. Without `approved`, the list holds the pending testimonials only. |
 | `search` | query | Finds the text in `description` or `username`. |
 | `rating` | query | Only the testimonials with this rating. |
-| `sort_by` | query | `created_at`, `updated_at`, `rating` or `approved_at`. Without `sort_by`, the list has no fixed order. |
+| `sort_by` | query | `created_at` (default), `updated_at`, `rating` or `approved_at`. |
 | `sort_direction` | query | `desc` (default) or `asc`. |
 
-The app reads `approved` as a filled or empty value, not as a boolean. `approved=0` gives the pending testimonials. `approved=false` is a filled value, so it gives the approved testimonials. A list cannot hold the pending and the approved testimonials together.
+A list cannot hold the pending and the approved testimonials together.
 
 ### Example request
 

@@ -78,9 +78,16 @@ If you lose `APP_KEY`, and you set a new key:
 
 - The setup URL changes.
 - The sign-in links that the app sent to contacts stop working.
-- The app cannot decrypt the identity secret of each project. The widget then refuses each `userHash`.
+- The app cannot decrypt the identity secret of each project. The widget then refuses each `userHash` with 403.
 - The users must sign in again.
 
-TODO(owner): The **Settings > Embed Widget** page shows the decrypted identity secret, so it can fail after a key change. How does an operator make new identity secrets for all projects after a lost `APP_KEY`?
+To make a new identity secret after a key change, do these steps in each project:
+
+1. Sign in as a user of the project.
+2. Open **Settings > Embed Widget**. The page says that the app cannot read the identity secret.
+3. Click **Regenerate secret**.
+4. Put the new secret in the server of your app.
+
+No command makes new secrets for all projects together.
 
 To prevent this, back up `.env`. Read [Backups](backups.md).

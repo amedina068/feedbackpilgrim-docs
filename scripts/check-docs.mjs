@@ -383,7 +383,7 @@ function loadEnvKeys(app) {
   }
 
   // Docker and deploy files: KEY: value, KEY=value and ${KEY}.
-  const dockerFiles = [join(app, 'docker-compose.yml'), join(app, 'Dockerfile'), ...listFiles(join(app, 'deploy'))];
+  const dockerFiles = [join(app, 'docker-compose.yml'), join(app, 'docker-compose.image.yml'), join(app, 'Dockerfile'), ...listFiles(join(app, 'deploy'))];
   for (const file of dockerFiles) {
     const text = read(file);
     add(/^\s*-?\s*([A-Z][A-Z0-9_]*)\s*[:=]/gm, text);

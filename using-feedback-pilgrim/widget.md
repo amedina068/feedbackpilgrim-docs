@@ -91,7 +91,7 @@ The widget reads the URL of your instance from the `src` of its own script tag. 
 | `avatar` | The URL of an avatar image. |
 | Other keys | Custom attributes. The app ignores `top_customer`. |
 
-If `releaseNotes` is in the call, it must have the key `show`.
+The keys `show` and `open` of `releaseNotes` are both optional.
 
 ## Identity verification
 
