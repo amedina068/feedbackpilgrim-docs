@@ -46,6 +46,46 @@ GET /tags
 | `sort_by` | query | `title` (default), `created_at` or `updated_at`. Another value sorts by `title`. |
 | `sort_direction` | query | `asc` (default) or `desc`. |
 
+### Example request
+
+```bash
+curl 'https://feedback.example.com/api/public/v1/tags?search=ui' \
+  -H 'Authorization: Bearer <your-token>' \
+  -H 'Accept: application/json'
+```
+
+### Example response
+
+`200`:
+
+```json
+{
+  "current_page": 1,
+  "data": [
+    {
+      "id": 3,
+      "client_id": 1,
+      "title": "ui",
+      "created_at": "2026-11-17T09:00:00.000000Z",
+      "updated_at": "2026-11-17T09:00:00.000000Z",
+      "posts_count": 12,
+      "contacts_count": 4
+    }
+  ],
+  "first_page_url": "https://feedback.example.com/api/public/v1/tags?page=1",
+  "from": 1,
+  "last_page": 1,
+  "last_page_url": "https://feedback.example.com/api/public/v1/tags?page=1",
+  "links": [],
+  "next_page_url": null,
+  "path": "https://feedback.example.com/api/public/v1/tags",
+  "per_page": 15,
+  "prev_page_url": null,
+  "to": 1,
+  "total": 1
+}
+```
+
 ## Create a tag
 
 ```http
@@ -57,6 +97,30 @@ POST /tags
 | `title` | string | Yes | Maximum 255 characters, unique in the project |
 
 `201` returns the tag. `422` means that the title is missing, too long, or in use in the project.
+
+### Example request
+
+```bash
+curl -X POST https://feedback.example.com/api/public/v1/tags \
+  -H 'Authorization: Bearer <your-token>' \
+  -H 'Accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{"title":"ui"}'
+```
+
+### Example response
+
+`201`:
+
+```json
+{
+  "title": "ui",
+  "client_id": 1,
+  "updated_at": "2026-11-17T09:00:00.000000Z",
+  "created_at": "2026-11-17T09:00:00.000000Z",
+  "id": 3
+}
+```
 
 ## Rename a tag
 
@@ -70,6 +134,30 @@ PATCH /tags/{id}
 
 `200` returns the tag.
 
+### Example request
+
+```bash
+curl -X PATCH https://feedback.example.com/api/public/v1/tags/3 \
+  -H 'Authorization: Bearer <your-token>' \
+  -H 'Accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{"title":"interface"}'
+```
+
+### Example response
+
+`200`:
+
+```json
+{
+  "id": 3,
+  "client_id": 1,
+  "title": "interface",
+  "created_at": "2026-11-17T09:00:00.000000Z",
+  "updated_at": "2026-11-17T09:00:00.000000Z"
+}
+```
+
 ## Delete a tag
 
 ```http
@@ -80,23 +168,19 @@ The app removes the tag from its posts and contacts, then deletes the tag. `204`
 
 CAUTION: Make sure that you delete the correct tag. You cannot undo a delete.
 
-## Examples
+### Example request
 
 ```bash
-curl 'https://feedback.example.com/api/public/v1/tags?search=ui' \
-  -H 'Authorization: Bearer <your-token>' \
-  -H 'Accept: application/json'
-
-curl -X POST https://feedback.example.com/api/public/v1/tags \
-  -H 'Authorization: Bearer <your-token>' \
-  -H 'Accept: application/json' \
-  -H 'Content-Type: application/json' \
-  -d '{"title":"ui"}'
-
 curl -X DELETE https://feedback.example.com/api/public/v1/tags/3 \
   -H 'Authorization: Bearer <your-token>' \
   -H 'Accept: application/json'
 ```
+
+### Example response
+
+`204` with no body.
+
+## PHP example
 
 Find a tag or create it, then put it on a post, in PHP:
 

@@ -44,6 +44,11 @@ The code of the app is in a separate repository, [amedina068/feedback-pilgrim-da
 - [Testimonials](api/testimonials.md)
 - [Tags](api/tags.md)
 - [OpenAPI and Postman](api/openapi.md)
+- [Widget init](api/widget.md)
+
+### SDKs
+
+- [SDKs](sdks/overview.md)
 
 ### MCP server
 
@@ -123,7 +128,8 @@ The script then makes sure that:
 
 - each `php artisan <command>` in a page exists in the app,
 - each environment variable in the code of a page exists in `.env.example`, `config/`, `docker-compose.yml`, `Dockerfile`, `deploy/` or `phpunit.xml` of the app,
-- each internal link and each anchor resolves.
+- each internal link and each anchor resolves,
+- each endpoint on a page in `api/` is an operation of `public/docs/openapi.json` of the app, and each operation of that spec is on a page in `api/`.
 
 If the app checkout has a `vendor/` folder, the script reads the command list from `php artisan list`. If not, it reads the command signatures in `app/Console/Commands` and a fixed list of framework commands.
 

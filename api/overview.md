@@ -8,6 +8,8 @@ order: 1
 
 The REST API reads and writes the data of one project: posts, release notes, contacts, testimonials and tags. Each request uses an API token, and the token decides the project. Read [Authentication](authentication.md).
 
+The OpenAPI spec and the Postman collection describe each endpoint. Read [OpenAPI and Postman](openapi.md).
+
 The MCP server uses the same code and the same validation. Read [MCP server](../mcp/overview.md).
 
 ## Base URL
@@ -17,6 +19,19 @@ https://feedback.example.com/api/public/v1
 ```
 
 Use the dashboard host of your instance, that is the host of `APP_URL`.
+
+## Keys
+
+The API uses two keys:
+
+| Key | Where to get it | Endpoints |
+|---|---|---|
+| API token | **Settings > API Tokens**. Read [Authentication](authentication.md). | All endpoints of `/api/public/v1` |
+| Publishable key (`pk_`) | **Settings > Embed Widget**. Read [Widget init](widget.md). | `POST /api/v1/init` only |
+
+An API token has all abilities (`*`) and no expiry date. The app has no token abilities to limit a token. A token can read and change all the data of its project.
+
+The publishable key is public. The widget sends it from the browser. It gives no access to the REST API.
 
 ## Endpoints
 
@@ -33,6 +48,12 @@ Use the dashboard host of your instance, that is the host of `APP_URL`.
 | `GET`, `PUT`, `PATCH`, `DELETE` | `/testimonials/{id}` | [Testimonials](testimonials.md) |
 | `GET`, `POST` | `/tags` | [Tags](tags.md) |
 | `PUT`, `PATCH`, `DELETE` | `/tags/{id}` | [Tags](tags.md) |
+
+The widget endpoint has another prefix and another key:
+
+| Method | Path | Page |
+|---|---|---|
+| `POST` | `/api/v1/init` | [Widget init](widget.md) |
 
 An update accepts `PUT` or `PATCH`. Both change only the fields that you send.
 
@@ -112,7 +133,9 @@ A `422` body looks like this:
 
 ## Rate limit
 
-The API allows 1000 requests a minute for each user. Without a user, the limit applies to each IP address. The MCP server has its own limit. Read [MCP server](../mcp/overview.md#rate-limit).
+The API allows 120 requests a minute for each user. All the tokens of one user share this limit. Without a user, for example for the widget init call, the limit applies to each IP address.
+
+Each response has the headers `X-RateLimit-Limit` and `X-RateLimit-Remaining`. A `429` response also has `Retry-After`, the number of seconds to wait. The MCP server has its own limit. Read [MCP server](../mcp/overview.md#rate-limit).
 
 ## Dates
 
