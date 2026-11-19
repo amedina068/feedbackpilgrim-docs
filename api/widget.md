@@ -53,7 +53,7 @@ POST /api/v1/init
 | `user_hash` | string | No | The identity hash. The project can require it. |
 | `releaseNotes.show` | boolean | No | If `true`, the response has the URL of the release notes iframe. |
 | `releaseNotes.open` | boolean | No | If `true`, the widget opens the release notes when the contact has not seen the newest note. |
-| `testimonials` | object | No | Any object that is not empty adds the URL of the testimonials iframe. |
+| `testimonials` | boolean or object | No | `true` adds the URL of the testimonials iframe. The widget script sends `true`. Any object that is not empty has the same effect. |
 
 ## Example request
 

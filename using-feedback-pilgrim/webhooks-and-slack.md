@@ -14,7 +14,7 @@ Open **Settings > Webhooks**. A webhook has:
 
 | Field | Rules |
 |---|---|
-| URL | Required. A URL with 2048 characters or fewer. |
+| URL | Required. An `https` URL with 2048 characters or fewer. The host must resolve to a public IP address. The URL cannot contain a user name or a password. |
 | Events | One or more of the events below. |
 | Active | On or off. A paused webhook gets no events. |
 
@@ -106,7 +106,17 @@ The old `X-FeedbackPilgrim-Signature` header signs the body only, so it cannot s
 
 If your server answers with a `4xx` or `5xx` status, or if the connection fails, the app tries again. The app tries three times in total. It waits 10 seconds, then 60 seconds, between the tries.
 
-The app logs each try: the event, the status code, the result and the first 1000 characters of the response. The settings page shows the five newest tries for each webhook.
+The app logs each try: the event, the status code and the result. The app does not store the response body. The result is one of these values:
+
+| Result | Meaning |
+|---|---|
+| `delivered` | Your server answered with a `2xx` status. |
+| `http_error` | Your server answered with a `4xx` or `5xx` status. |
+| `redirect_refused` | Your server answered with a redirect. The app does not follow redirects. |
+| `connection_failed` | The app could not connect, or the request timed out. |
+| `address_refused` | The host of the URL resolved to an address that is not public. The app did not send the request and does not try again. |
+
+The settings page shows the five newest tries for each webhook.
 
 ## Slack
 
