@@ -1,17 +1,51 @@
 ---
 title: Release process
-description: How a new version of Feedback Pilgrim is made and published.
+description: Write release notes and changelog lines for a change that users can see, and how a new version is made and published.
 order: 4
 ---
 
 # Release process
 
-The `main` branch of the app has a changelog and a workflow that publishes the Docker image, but no version tags yet. This page has the facts that the code gives, and the questions for the maintainer.
+The `main` branch of the app has a changelog and a workflow that publishes the Docker image, but no version tags yet. This page explains the release notes and the changelog. It also has the facts that the code gives about versions, and the questions for the maintainer.
 
-## What the code gives
+## Release notes
+
+[Release notes](../getting-started/release-notes.md) in this docs repository holds the release notes of Feedback Pilgrim. The app repository has no release notes file.
+
+The release notes of the app are not the release notes feature of Feedback Pilgrim. That feature lets a project publish its own changelog. Read [Release notes](../using-feedback-pilgrim/release-notes.md).
+
+### In a pull request of the app
+
+A pull request with a change that users can see has a `## Release note` section in its body. Write one or two short sentences in plain text. Tell the user what changed and what to do.
+
+```markdown
+## Release note
+
+The weekly report now covers the previous week, Monday to Sunday.
+```
+
+A pull request without a change for users has no `## Release note` section.
+
+### When a release goes out
+
+1. Collect the `## Release note` sections of the merged pull requests.
+2. Open `getting-started/release-notes.md` in the docs repository.
+3. Find the heading of the release date, for example `## November 18, 2026`. If it does not exist, add it above the other dates.
+4. Add one bullet for each note. Copy the text of the note as it is.
+5. Open a pull request in the docs repository.
+
+### Rules
+
+- Write plain text. Do not use Markdown links or HTML in a note.
+- Write one change in each bullet.
+- Keep the newest date first. Do not add a second heading for the same date.
+- Do not change old notes.
+
+## Versions and images: what the code gives
 
 - The project uses Semantic Versioning. `CHANGELOG.md` follows Keep a Changelog. The first version, `0.1.0`, is in the changelog, but it has no release date yet.
 - If a pull request changes the behavior for users, it adds one line under `[Unreleased]` in `CHANGELOG.md`. The sections are `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed` and `Security`.
+- `CHANGELOG.md` lists the changes of each version of the code. The release notes page of the docs lists the changes that users can see, by date. A change for users goes in `CHANGELOG.md` and in the `## Release note` section of the pull request.
 - A push of a tag that starts with `v`, for example `v1.2.3`, starts `.github/workflows/docker-publish.yml`. A push to a branch or a pull request does not publish an image.
 - The workflow builds the image for `linux/amd64` and `linux/arm64` and pushes it to `ghcr.io/<owner>/feedbackpilgrim`.
 - The tag `v1.2.3` gives the image tags `1.2.3`, `1.2` and `latest`. The major tag `1` starts at `1.0.0`, so a `v0` tag gives no major tag.
