@@ -38,6 +38,15 @@ const EXTERNAL_ENV = new Map([
   ['CLOUDFLARE_API_TOKEN', 'read by Caddy in the reverse proxy example, not by the app'],
   ['FEEDBACKPILGRIM_APP_PATH', 'read by the scripts of this repository'],
   ['FEEDBACKPILGRIM_APP_TOKEN', 'a secret of the CI of this repository'],
+  // The SDK page names these variables. The SDKs and the apps of the reader
+  // read them, not the Feedback Pilgrim app.
+  ['FEEDBACKPILGRIM_URL', 'read by the Python and Ruby SDKs and by the Laravel config of the PHP SDK'],
+  ['FEEDBACKPILGRIM_TOKEN', 'read by the Python and Ruby SDKs and by the Laravel config of the PHP SDK'],
+  ['FEEDBACKPILGRIM_IDENTITY_SECRET', 'read by the Ruby SDK and by the Laravel config of the PHP SDK'],
+  ['FEEDBACKPILGRIM_WEBHOOK_SECRET', 'read by the Ruby SDK and by the Laravel config of the PHP SDK'],
+  ['FEEDBACKPILGRIM_WEBHOOK_TOLERANCE', 'read by the Laravel config of the PHP SDK'],
+  ['FEEDBACKPILGRIM_TIMEOUT', 'read by the Laravel config of the PHP SDK'],
+  ['FEEDBACKPILGRIM_RETRIES', 'read by the Laravel config of the PHP SDK'],
 ]);
 
 // Framework commands that the fallback mode accepts when `vendor/` is missing.
