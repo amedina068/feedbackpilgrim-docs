@@ -164,7 +164,7 @@ curl -X PATCH https://feedback.example.com/api/public/v1/tags/3 \
 DELETE /tags/{id}
 ```
 
-The app removes the tag from its posts and contacts, then deletes the tag. `204` returns no body.
+The app removes the tag from its posts, contacts and release notes, then deletes the tag. `204` returns no body.
 
 CAUTION: Make sure that you delete the correct tag. You cannot undo a delete.
 

@@ -30,6 +30,8 @@ Each release also publishes a prebuilt image to the GitHub Container Registry, f
 
 4. Do steps 7 to 9 of the installation below. Add `-f docker-compose.image.yml` to each `docker compose` command.
 
+`FEEDBACKPILGRIM_IMAGE` selects the image. The default in `docker-compose.image.yml` is the placeholder `ghcr.io/OWNER/feedbackpilgrim`. Set `FEEDBACKPILGRIM_IMAGE` in `.env` to the image of the release, for example `FEEDBACKPILGRIM_IMAGE=ghcr.io/<owner>/feedbackpilgrim`. Use lowercase, because a Docker image name must be lowercase. If you do not set it, `docker compose up` and `docker compose pull` fail.
+
 `FEEDBACKPILGRIM_VERSION` selects the image tag. The default is `latest`. To stay on one version, set an exact version, for example `FEEDBACKPILGRIM_VERSION=0.1.0`.
 
 ## Requirements

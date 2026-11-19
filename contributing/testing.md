@@ -86,12 +86,13 @@ npm run build
 
 ## The CI
 
-`.github/workflows/ci.yml` runs on each push to `main` and on each pull request. It has three jobs:
+`.github/workflows/ci.yml` runs on each push to `main` and on each pull request. It has four jobs:
 
 | Job | What it runs |
 |---|---|
 | Code style (Pint) | `vendor/bin/pint --test` on PHP 8.3 |
 | PHP tests | `cp .env.example .env`, `php artisan key:generate`, then `php artisan test` |
-| JS build | `npm ci` and `npm run build` on Node.js 24. Then it makes sure that `public/pilgrim.js` and `public/build/manifest.json` exist. |
+| JS build | `npm ci`, `npm run build` and `npm run test:js` on Node.js 24. Then it makes sure that `public/pilgrim.js` and `public/build/manifest.json` exist. |
+| API docs | `composer api-docs`, then `git diff --exit-code docs/api public/docs/openapi.json`. The job fails when the generated API files are not current. |
 
-The CI does not run `npm run test:js`. Run it on your computer when you change the widget.
+If you change `docs/api/openapi.yaml`, run `composer api-docs` and commit the generated files.

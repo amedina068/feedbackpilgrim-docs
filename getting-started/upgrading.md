@@ -106,9 +106,9 @@ A new project requires identity verification of the widget. A project that exist
 
 ### The old widget key
 
-The widget now sends the publishable key (`pk_...`) of the project. For a short time, the app also accepts the old public widget token of a project. The app writes a warning to the log each time that a host app uses the old token.
+The widget sends the publishable key (`pk_...`) of the project. The app accepts only this key. A host app that still sends the old public widget token gets `401` with the error `Invalid client key`, and the widget does not load.
 
-If the log shows `Embed widget used a deprecated legacy client key`, update the `data-client` attribute of the script tag in that host app. Use the publishable key from **Settings > Embed Widget**.
+CAUTION: Update each host app before you upgrade. Put the publishable key from **Settings > Embed Widget** in the `data-client` attribute of the script tag.
 
 ### The testimonial rating setting
 

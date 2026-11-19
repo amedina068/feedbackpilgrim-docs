@@ -28,7 +28,8 @@ SMTP is the default mailer.
 | `MAIL_PORT` | `587` |
 | `MAIL_USERNAME` | `null` |
 | `MAIL_PASSWORD` | `null` |
-| `MAIL_ENCRYPTION` | `tls` |
+
+The port sets the TLS mode. Port `465` uses implicit TLS. Each other port, for example `587`, starts without TLS and uses STARTTLS when the server offers it. The app does not read `MAIL_ENCRYPTION`. A change to that value has no effect.
 
 ## Mailgun
 

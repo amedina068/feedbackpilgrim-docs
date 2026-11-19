@@ -278,7 +278,7 @@ Renames a tag.
 
 ## delete_tag
 
-Removes the tag from its posts and contacts, then deletes the tag. The result is `{"deleted": true, "id": <id>}`.
+Removes the tag from its posts, contacts and release notes, then deletes the tag. The result is `{"deleted": true, "id": <id>}`.
 
 | Argument | Type | Required | Description |
 |---|---|---|---|
