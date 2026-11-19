@@ -6,7 +6,7 @@ order: 5
 
 # Upgrading
 
-Only the latest release gets security fixes. The changelog of the app repository lists the changes and the breaking changes of each version. Read it before you upgrade.
+Only the latest release gets security fixes. The changelog of the app repository lists the changes and the breaking changes of each version. Read it before you upgrade. The [release notes](release-notes.md) list the changes that users can see, by date.
 
 TODO(owner): Can an instance skip versions when it upgrades, for example from `0.1.0` to `0.3.0`?
 

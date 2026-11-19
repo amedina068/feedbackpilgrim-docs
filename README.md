@@ -17,6 +17,7 @@ The code of the app is in a separate repository, [amedina068/feedback-pilgrim-da
 - [Install without Docker](getting-started/installation-manual.md)
 - [Configuration](getting-started/configuration.md)
 - [Upgrading](getting-started/upgrading.md)
+- [Release notes](getting-started/release-notes.md)
 
 ### Using Feedback Pilgrim
 
