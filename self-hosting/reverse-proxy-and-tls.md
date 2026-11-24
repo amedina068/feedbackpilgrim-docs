@@ -25,6 +25,8 @@ The certificate must cover the dashboard domain and the wildcard. Most ACME clie
 
 Send both names to the `web` service. Keep the original `Host` header, because the app finds the project from the host.
 
+The [`deploy/`](https://github.com/amedina068/feedbackpilgrim/tree/main/deploy) folder of the app repository has an NGINX example for this proxy: [`nginx/feedbackpilgrim-proxy.conf`](https://github.com/amedina068/feedbackpilgrim/blob/main/deploy/nginx/feedbackpilgrim-proxy.conf).
+
 This example `Caddyfile` gets a wildcard certificate with a DNS challenge. It needs a Caddy build with the module of your DNS provider, here Cloudflare:
 
 ```text
@@ -38,9 +40,17 @@ feedback.example.com, *.feedback.example.com {
 
 ## Forwarded headers
 
-The app trusts these headers from any proxy: `X-Forwarded-For`, `X-Forwarded-Host`, `X-Forwarded-Port`, `X-Forwarded-Proto` and the AWS ELB header. The trusted proxy list is `*` in `bootstrap/app.php`. You cannot change it in `.env`.
+The app reads these headers only from a trusted proxy: `X-Forwarded-For`, `X-Forwarded-Host`, `X-Forwarded-Port`, `X-Forwarded-Proto` and the AWS ELB header. The rate limits and the logs use the client IP from these headers.
 
-WARNING: Do not expose port 8080 to the internet. The app trusts the forwarded headers from any client. A client that can reach the port directly can send a false host or scheme. Allow the port only from the reverse proxy, for example with a firewall rule.
+`TRUSTED_PROXIES` in `.env` sets the trusted proxies. It is a comma-separated list of IP addresses or CIDR ranges. If it is empty, the app trusts only the Cloudflare ranges in `config/trustedproxy.php`. Use the address that the app sees, not the public address of the proxy:
+
+- If Caddy or NGINX runs on the Docker host, use the Docker network range: `TRUSTED_PROXIES=172.16.0.0/12`.
+- If the proxy is on another server, use the private address of that server.
+- If NGINX or Caddy runs PHP-FPM directly, without Docker, leave the value empty.
+
+If the value is wrong, the app sees all the visitors with the IP of the proxy. Then the rate limits apply to all the visitors together, and the links in the emails can use `http` instead of `https`.
+
+WARNING: Do not set `TRUSTED_PROXIES=*` when the app port is open to the internet. A client that can reach the port directly can then send a false IP, host or scheme.
 
 Compose publishes the port on the loopback interface (`127.0.0.1`) of the host. Thus only a proxy on the same host can reach the port. If the proxy is on another host, set `APP_BIND=0.0.0.0` in `.env`. Then allow the port only from the proxy with a firewall rule.
 

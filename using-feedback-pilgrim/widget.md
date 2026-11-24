@@ -47,8 +47,15 @@ The app stores the identity secret encrypted with `APP_KEY`. To make a new secre
    ```js
    import { createHmac } from 'node:crypto'
 
-   const userHash = createHmac('sha256', identitySecret).update(email.trim().toLowerCase()).digest('hex')
+   // The same rule as PHP strtolower(trim($email)).
+   const normalizedEmail = email
+     .replace(/^[ \t\n\r\0\x0B]+|[ \t\n\r\0\x0B]+$/g, '')
+     .replace(/[A-Z]/g, (letter) => letter.toLowerCase())
+
+   const userHash = createHmac('sha256', identitySecret).update(normalizedEmail).digest('hex')
    ```
+
+   The app removes only the spaces, tabs, line breaks, NUL and vertical tabs at the start and at the end of the email. It changes only the letters `A` to `Z` to lowercase. Do not use `trim()` and `toLowerCase()` of JavaScript. They also change other whitespace and the Unicode letters, and then the hash does not match.
 
 3. Call `pilgrim()` at the end of the `<body>`:
 

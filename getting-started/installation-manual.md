@@ -24,18 +24,26 @@ Redis is necessary. The example environment uses Redis for the cache, the sessio
 
 The app uses the `phpredis` client (`REDIS_CLIENT=phpredis`), so PHP needs the `redis` extension.
 
-TODO(owner): The repository has a web server configuration only inside the Docker image. Do you want to publish an example NGINX or Caddy configuration for an install without Docker?
+The [`deploy/`](https://github.com/amedina068/feedbackpilgrim/tree/main/deploy) folder of the app repository has example files for an install without Docker:
+
+| File | What it is |
+|---|---|
+| [`nginx/feedbackpilgrim.conf`](https://github.com/amedina068/feedbackpilgrim/blob/main/deploy/nginx/feedbackpilgrim.conf) | NGINX with PHP-FPM |
+| [`caddy/Caddyfile`](https://github.com/amedina068/feedbackpilgrim/blob/main/deploy/caddy/Caddyfile) | Caddy with PHP-FPM |
+| [`systemd/feedbackpilgrim-queue.service`](https://github.com/amedina068/feedbackpilgrim/blob/main/deploy/systemd/feedbackpilgrim-queue.service) | The queue worker as a systemd service |
+| [`systemd/feedbackpilgrim-scheduler.service`](https://github.com/amedina068/feedbackpilgrim/blob/main/deploy/systemd/feedbackpilgrim-scheduler.service) | The scheduler as a systemd service |
+| [`supervisor/feedbackpilgrim.conf`](https://github.com/amedina068/feedbackpilgrim/blob/main/deploy/supervisor/feedbackpilgrim.conf) | The queue worker and the scheduler as Supervisor programs |
+
+The files use the app folder `/var/www/feedbackpilgrim`, the user `www-data` and the PHP-FPM socket `/run/php/php8.3-fpm.sock`. Replace these values with the values of your server.
 
 ## Install
 
 1. Clone the repository and go into its folder:
 
    ```bash
-   git clone https://github.com/amedina068/feedback-pilgrim-dashboard.git
-   cd feedback-pilgrim-dashboard
+   git clone https://github.com/amedina068/feedbackpilgrim.git
+   cd feedbackpilgrim
    ```
-
-   TODO(owner): This URL is the private app repository. The public repository can have a different owner and name. What is the clone URL of the public repository?
 
 2. Install the PHP packages without the development packages:
 
@@ -78,7 +86,7 @@ TODO(owner): The repository has a web server configuration only inside the Docke
    php artisan optimize
    ```
 
-9. Configure the web server. Send the dashboard domain and the wildcard of the projects to `public/index.php`.
+9. Configure the web server. Send the dashboard domain and the wildcard of the projects to `public/index.php`. Start from the NGINX or the Caddy example above.
 10. Give the user of the web server write access to `storage/` and `bootstrap/cache/`.
 11. Start the queue worker and the scheduler. Read [Queues and the scheduler](../self-hosting/queues-and-scheduler.md).
 

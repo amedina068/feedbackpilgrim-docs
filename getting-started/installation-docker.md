@@ -30,7 +30,7 @@ Each release also publishes a prebuilt image to the GitHub Container Registry, f
 
 4. Do steps 7 to 9 of the installation below. Add `-f docker-compose.image.yml` to each `docker compose` command.
 
-`FEEDBACKPILGRIM_IMAGE` selects the image. The default in `docker-compose.image.yml` is the placeholder `ghcr.io/OWNER/feedbackpilgrim`. Set `FEEDBACKPILGRIM_IMAGE` in `.env` to the image of the release, for example `FEEDBACKPILGRIM_IMAGE=ghcr.io/<owner>/feedbackpilgrim`. Use lowercase, because a Docker image name must be lowercase. If you do not set it, `docker compose up` and `docker compose pull` fail.
+`FEEDBACKPILGRIM_IMAGE` selects the image. The default in `docker-compose.image.yml` is `ghcr.io/amedina068/feedbackpilgrim`. Set `FEEDBACKPILGRIM_IMAGE` in `.env` only to run an image from another registry or a fork. Use lowercase, because a Docker image name must be lowercase.
 
 `FEEDBACKPILGRIM_VERSION` selects the image tag. The default is `latest`. To stay on one version, set an exact version, for example `FEEDBACKPILGRIM_VERSION=0.1.0`.
 
@@ -47,11 +47,9 @@ Each release also publishes a prebuilt image to the GitHub Container Registry, f
 1. Clone the repository and go into its folder:
 
    ```bash
-   git clone https://github.com/amedina068/feedback-pilgrim-dashboard.git
-   cd feedback-pilgrim-dashboard
+   git clone https://github.com/amedina068/feedbackpilgrim.git
+   cd feedbackpilgrim
    ```
-
-   TODO(owner): This URL is the private app repository. The public repository can have a different owner and name. What is the clone URL of the public repository?
 
 2. Copy the example environment file:
 

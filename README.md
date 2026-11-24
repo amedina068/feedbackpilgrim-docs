@@ -4,9 +4,9 @@ This repository holds the documentation of Feedback Pilgrim, a self-hosted feedb
 
 Each Markdown file is one page. The folder of a file is the section of the page.
 
-TODO(owner): The code does not say where these pages will render. Each instance serves its own guides at `/documentation`, but that is a different set of pages. What is the public URL of this documentation, and which tool will render it?
+GitHub shows the pages in the public repository [amedina068/feedbackpilgrim-docs](https://github.com/amedina068/feedbackpilgrim-docs). Each instance also serves its own guides at `/documentation`. Those guides are a different set of pages.
 
-The code of the app is in a separate repository, [amedina068/feedback-pilgrim-dashboard](https://github.com/amedina068/feedback-pilgrim-dashboard). The docs describe the `main` branch of that code, and the check script compares the pages with it.
+The code of the app is in a separate repository, [amedina068/feedbackpilgrim](https://github.com/amedina068/feedbackpilgrim). The docs describe the `main` branch of that code, and the check script compares the pages with it.
 
 ## Pages
 
@@ -122,7 +122,7 @@ node scripts/check-docs.mjs
 To also check the artisan commands and the environment variables against the app, give the path of an app checkout:
 
 ```bash
-FEEDBACKPILGRIM_APP_PATH=../feedback-pilgrim-dashboard node scripts/check-docs.mjs
+FEEDBACKPILGRIM_APP_PATH=../feedbackpilgrim node scripts/check-docs.mjs
 ```
 
 The script then makes sure that:

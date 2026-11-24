@@ -45,10 +45,10 @@ php artisan schedule:list
 ## Run the processes without Docker
 
 1. Run `php artisan queue:work --tries=3` with a process manager, for example systemd or Supervisor. Restart it if it stops.
-2. Add a cron entry that runs the scheduler each minute:
+2. Run the scheduler. Use `php artisan schedule:work` with the process manager, or add a cron entry that runs the scheduler each minute:
 
    ```text
-   * * * * * cd /path/to/feedback-pilgrim-dashboard && php artisan schedule:run >> /dev/null 2>&1
+   * * * * * cd /var/www/feedbackpilgrim && php artisan schedule:run >> /dev/null 2>&1
    ```
 
 3. After each deploy, restart the worker:
@@ -57,7 +57,13 @@ php artisan schedule:list
    php artisan queue:restart
    ```
 
-The repository has no configuration file for a process manager.
+The [`deploy/`](https://github.com/amedina068/feedbackpilgrim/tree/main/deploy) folder of the app repository has example files for the two processes. Use the systemd units or the Supervisor file, not both:
+
+- [`systemd/feedbackpilgrim-queue.service`](https://github.com/amedina068/feedbackpilgrim/blob/main/deploy/systemd/feedbackpilgrim-queue.service)
+- [`systemd/feedbackpilgrim-scheduler.service`](https://github.com/amedina068/feedbackpilgrim/blob/main/deploy/systemd/feedbackpilgrim-scheduler.service)
+- [`supervisor/feedbackpilgrim.conf`](https://github.com/amedina068/feedbackpilgrim/blob/main/deploy/supervisor/feedbackpilgrim.conf)
+
+The app has one queue, `default`, on the `redis` connection. Run one worker. A job has 60 seconds, the default `--timeout` of `queue:work`. The examples give a stopped worker 70 seconds to finish its job.
 
 ## Health checks in Docker
 

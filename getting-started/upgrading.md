@@ -8,7 +8,7 @@ order: 5
 
 Only the latest release gets security fixes. The changelog of the app repository lists the changes and the breaking changes of each version. Read it before you upgrade. The [release notes](release-notes.md) list the changes that users can see, by date.
 
-TODO(owner): Can an instance skip versions when it upgrades, for example from `0.1.0` to `0.3.0`?
+You can skip versions, for example from `0.1.0` to `0.3.0`. `php artisan migrate` runs all the migrations that the instance does not have, in order. Read the changelog of each version that you skip, because a version can have a manual step.
 
 Make a backup before you upgrade. Read [Backups](../self-hosting/backups.md).
 
@@ -82,7 +82,14 @@ The `web` service runs the new migrations when it starts. The `queue` and `sched
    php artisan queue:restart
    ```
 
-TODO(owner): The code has no rollback procedure. If an upgrade fails, do you recommend a restore from the backup, or `php artisan migrate:rollback`?
+## If an upgrade fails
+
+Restore the backup that you made before the upgrade. Do not use `php artisan migrate:rollback`. Some migrations change or remove data, and their `down` method cannot bring the data back. For example, the migration that adds the unique index of the votes removes the duplicate votes.
+
+1. Stop the queue worker and the scheduler.
+2. Go back to the old version of the code or the image.
+3. Restore the database, `storage/app` and `.env` from the backup. Read [Backups](../self-hosting/backups.md).
+4. Start the app again.
 
 ## Instances made with older code
 
