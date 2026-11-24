@@ -153,9 +153,17 @@ The SDKs retry a failed request 2 times by default.
 
 - The wait doubles on each retry: about 0.5, 1, 2 and 4 seconds, and 8 seconds at most. Half of each wait is random (jitter).
 - The SDK retries a `429` for each request, because the server did not do the request.
+- The SDK retries each request, also a create, after a connection error before the send: a DNS failure, a refused connection or a connect timeout. The server did not get the request, so a retry is safe.
 - If a retried response has `Retry-After` (whole seconds or an HTTP date), the SDK waits that time. If `Retry-After` is more than 60 seconds, the SDK does not retry. It gives the error.
 - `GET`, `PATCH`, `DELETE` and the contact `upsert` are idempotent. The SDK retries them after a `429`, a `5xx`, a timeout or a connection error.
-- A create and a sign-in request are not idempotent. A second create can make a second record, and each sign-in request makes a new link. The SDK retries them only after a `429`.
+- A create and a sign-in request are not idempotent. A second create can make a second record, and each sign-in request makes a new link. The SDK retries them only after a `429` or a connection error before the send. It does not retry them after a `5xx`, a read timeout or a reset after the send.
+
+| Error before the send | JavaScript | PHP | Python | Ruby |
+|---|---|---|---|---|
+| DNS failure | `ENOTFOUND`, `EAI_AGAIN` | cURL error 5 or 6 | `socket.gaierror` | `SocketError` |
+| Refused connection | `ECONNREFUSED` | cURL error 7 | `ConnectionRefusedError` | `Errno::ECONNREFUSED` |
+| Connect timeout | `UND_ERR_CONNECT_TIMEOUT` | cURL error 28, "Connection timed out" | A timeout before the read | `Net::OpenTimeout` |
+| The flag on the error | `ConnectionError.beforeSend` | `ConnectionException::$beforeSend` | `APIConnectionError.before_send` | `ConnectionError#before_send?` |
 - The SDK does not retry another `4xx` status.
 
 The limit is 120 requests each minute for each user. All the tokens of one user share this limit. Read [Rate limit](../api/overview.md#rate-limit).
@@ -644,7 +652,7 @@ Each `APIError` has `status_code`, `message`, `body` and `headers`.
 
 ### Retries
 
-The client uses the rules in [Retries](#retries). A custom transport raises `APIConnectionError` when it gets no response, and `APITimeoutError` after a timeout. The client retries both only for an idempotent request.
+The client uses the rules in [Retries](#retries). A custom transport raises `APIConnectionError` when it gets no response, and `APITimeoutError` after a timeout. Set `before_send=True` only for a DNS failure, a refused connection or a connect timeout. Then the client retries every request.
 
 ### Webhook verification
 
