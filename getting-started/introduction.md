@@ -36,7 +36,7 @@ Feedback Pilgrim is a Laravel 13 app on PHP 8.3, with Blade views, Vue 3 compone
 | Scheduler | Runs `php artisan schedule:work`. It starts the weekly reports every Monday. |
 | File storage | Holds the uploads (attachments, photos, avatars and logos) in `storage/app`. |
 
-TODO(owner): The code uses MySQL in production and SQLite in the tests. Do you support other databases, for example PostgreSQL or MariaDB?
+Feedback Pilgrim supports MySQL only. Use MySQL 8.4, the version of the Docker stack. The tests use SQLite in memory. Do not use SQLite for an instance. PostgreSQL and MariaDB are not tested and not supported.
 
 ## Two kinds of accounts
 
@@ -65,7 +65,11 @@ Each user also has an **admin contact** in each of their projects. The admin con
 | Publishable key | The public `pk_...` key that the widget sends. It gives no API access. |
 | Identity secret | The secret that your server uses to sign the email of a user for the widget. |
 
-TODO(owner): `composer.json` of the app says `"license": "MIT"`, but this value comes from the Laravel skeleton, and the repository has no LICENSE file on `main`. Under which license do you publish Feedback Pilgrim?
+## License
+
+The app is free software under the GNU Affero General Public License version 3 (AGPL-3.0). The [`LICENSE`](https://github.com/amedina068/feedbackpilgrim/blob/main/LICENSE) file of the app repository has the full text. If you change the code and let other people use your changed copy over a network, you must offer them the source code of your changed copy.
+
+The SDKs are under the MIT license.
 
 ## Next steps
 

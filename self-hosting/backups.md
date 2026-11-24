@@ -8,7 +8,7 @@ order: 2
 
 Feedback Pilgrim does not make backups by itself. Make them with the tools of your server.
 
-TODO(owner): The code has no backup schedule. How often do you recommend a backup, and how many days of backups do you recommend to keep?
+Back up the database and the uploads each day. Keep the daily backups for 14 days. Also make a backup before each upgrade. Copy the backups to storage outside the server. Restore a backup to a test server one time each month, to make sure that the backups work.
 
 ## What to back up
 

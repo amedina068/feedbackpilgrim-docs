@@ -10,7 +10,7 @@ This page lists the changes to Feedback Pilgrim that users can see. The newest d
 
 This page is about the Feedback Pilgrim app itself. To publish the release notes of your own project, read [Release notes](../using-feedback-pilgrim/release-notes.md).
 
-The release notes have no version numbers. For developers, `CHANGELOG.md` in the [app repository](https://github.com/amedina068/feedback-pilgrim-dashboard/blob/main/CHANGELOG.md) lists the changes to the code for each version.
+The release notes have no version numbers. For developers, `CHANGELOG.md` in the [app repository](https://github.com/amedina068/feedbackpilgrim/blob/main/CHANGELOG.md) lists the changes to the code for each version.
 
 ## November 18, 2026
 
