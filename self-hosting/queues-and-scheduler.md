@@ -23,8 +23,9 @@ Feedback Pilgrim needs two processes in addition to the web server:
 | `DeliverWebhook` | Sends one webhook event. | 3, with a wait of 10 seconds, then 60 seconds |
 | `SendSlackMessage` | Posts one Slack message. | 3, with a wait of 10 seconds, then 60 seconds |
 | `SyncContactAttributes` | Adds the new custom attribute keys of a contact to the attribute list of the project. | 3 (from `--tries=3`) |
+| `CopyTestimonialAvatar` | Copies the avatar of one imported Senja testimonial to `storage/app/public`. It has 30 seconds. Read [Avatars of imported testimonials](../using-feedback-pilgrim/testimonials.md#avatars-of-imported-testimonials). | 1 |
 
-If the worker stops, the app keeps the jobs in Redis. The emails, the webhooks and the Slack messages go out when the worker starts again.
+If the worker stops, the app keeps the jobs in Redis. The emails, the webhooks, the Slack messages and the avatar copies run when the worker starts again.
 
 The testimonial request email does not use the queue. The app sends it during the request that moves the post to a `complete` stage.
 

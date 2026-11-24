@@ -32,7 +32,7 @@ You can import a CSV export from [Senja](https://senja.io). Each row with text b
 4. In **CSV file**, select the file.
 5. Click **Import**.
 
-The page then shows "Imported N testimonials (M skipped)."
+The page then shows "Imported N testimonials (D already imported, M skipped)."
 
 ### The columns
 
@@ -42,7 +42,7 @@ The page then shows "Imported N testimonials (M skipped)."
 | `customer_name` | The user name. If it is empty, the user name is `Anonymous`. |
 | `customer_tagline` | The subtitle |
 | `customer_company` | The subtitle, if `customer_tagline` is empty |
-| `customer_avatar` | The avatar. The app keeps only an `https` URL of 255 characters or fewer. |
+| `customer_avatar` | The avatar. The app copies the image of an `https` URL of 255 characters or fewer. Read [Avatars of imported testimonials](#avatars-of-imported-testimonials). |
 | `rating` | The rating, from 1 to 5. Another value, for example `0`, gives no rating. |
 | `title` | The title |
 | `date` | The creation date and the approval date. If the date is empty or not valid, the app uses the time of the import. |
@@ -56,9 +56,37 @@ The file must have the columns `text` and `customer_name`. If one is missing, th
 - The app skips a row with text of more than 5000 characters. It also skips a row with a title, a user name or a subtitle of more than 255 characters.
 - The app keeps the rating of a row also when the **Rating** setting is off.
 - The imported testimonials have no contact.
-- The app stores the URL of the avatar. It does not copy the image. The public site loads the image from that URL.
-- The app does not look for duplicates. If you import the same file two times, the project gets each testimonial two times.
+- The app skips a row that is already in the project. Read [Import the same file again](#import-the-same-file-again).
+- A project can run one import at a time. If an import of the project runs, the app refuses a second import with "Another import of testimonials is running. Try again in a minute."
 - A user can start 10 imports each minute.
+
+### Import the same file again
+
+You can import a new Senja export that has the rows of an earlier export. The app skips each row that is already in the project. The result shows the count of these rows as "already imported".
+
+A row is already in the project when a testimonial of the project has the same user name and the same description. The Senja export has no ID for each row, so the app compares these two values.
+
+- If you edit the description of an imported testimonial, the next import adds the row from Senja again.
+- If two people wrote the same text, and they have the same name, the app imports only the first row.
+- The app also finds the testimonials that an import made before this change.
+
+### Avatars of imported testimonials
+
+The app copies each avatar to its own storage. The public site does not load images from Senja.
+
+The copy runs on the queue after the import. Until the copy is done, the testimonial shows an avatar with the initials of the user name. If no queue worker runs, the copy does not occur. Read [Queues and the scheduler](../self-hosting/queues-and-scheduler.md).
+
+The app does not copy an avatar in these cases. The testimonial then keeps the initials avatar.
+
+- The URL is not `https`, or it has more than 255 characters.
+- The host of the URL has a private or local address.
+- The server answers with a redirect or an error, or it does not answer in 10 seconds.
+- The image is larger than 1 MB.
+- The file is not a PNG, JPEG, GIF or WebP image. The app reads the type from the file content.
+
+When a copy fails, the app writes "Could not copy the avatar of an imported testimonial." to the log, with the testimonial ID and the reason.
+
+The testimonials of imports that ran before this change keep the URL of the Senja image.
 
 ## Approve a testimonial
 
