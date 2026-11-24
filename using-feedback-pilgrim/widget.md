@@ -1,7 +1,7 @@
 ---
 title: The embeddable widget
 description: Add pilgrim.js to your app to sign in your users on the public site, and to show the release notes and the testimonial form.
-order: 10
+order: 11
 ---
 
 # The embeddable widget

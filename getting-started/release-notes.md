@@ -12,6 +12,18 @@ This page is about the Feedback Pilgrim app itself. To publish the release notes
 
 The release notes have no version numbers. For developers, `CHANGELOG.md` in the [app repository](https://github.com/amedina068/feedbackpilgrim/blob/main/CHANGELOG.md) lists the changes to the code for each version.
 
+## November 24, 2026
+
+- A **Settings > Email** page. A project can send the emails to its contacts from its own domain through Amazon SES. The page shows the DNS records, and the app checks a pending domain every 10 minutes. Until SES verifies the domain, the emails come from `MAIL_FROM_ADDRESS`. Read [Send email from your domain](../using-feedback-pilgrim/sending-domain.md).
+- The new `AWS_SES_*` values are optional. If one is empty, the app uses the matching `AWS_*` value. Read [Mail](../self-hosting/mail.md#amazon-ses).
+- An **Import** button on the **Testimonials** page. It imports a CSV export from Senja. Each row with text becomes an approved testimonial. Read [Testimonials](../using-feedback-pilgrim/testimonials.md#import-testimonials-from-senja).
+- The public site and the dashboard have a new layout, new menus and new empty states. The pages, the fields and the texts stay the same. The mobile menus and the filter panels close on Escape.
+- The `LICENSE` file. Feedback Pilgrim is under the GNU Affero General Public License version 3 (AGPL-3.0).
+- Example files in `deploy/` for an install without Docker: NGINX, Caddy, systemd and Supervisor. An NGINX example for a proxy in front of the Docker stack.
+- The default image in `docker-compose.image.yml` is `ghcr.io/amedina068/feedbackpilgrim`.
+- The **Delete Account** button on the profile page opened nothing. It now opens the dialog that asks for the password.
+- The "Saved." message on the profile page stayed on the page. It now goes away after two seconds.
+
 ## November 18, 2026
 
 - The OpenAPI spec in `docs/api/openapi.yaml`, with the widget `init` call and the key that each operation needs. A Postman collection and environment are in `docs/api/`.

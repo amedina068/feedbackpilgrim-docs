@@ -1,6 +1,6 @@
 ---
 title: Testimonials
-description: Collect testimonials with an optional rating, approve them, and ask for them by email when a request ships.
+description: Collect testimonials with an optional rating, import them from Senja, approve them, and ask for them by email when a request ships.
 order: 8
 ---
 
@@ -16,10 +16,49 @@ A testimonial is a text from a customer, with an optional star rating from 1 to 
 | The widget | Description, rating | No | The contact of the widget, or `Anonymous User` |
 | The dashboard (**Testimonials > New**) | Title, description, user name, subtitle, contact, rating | Yes | The contact that you choose, or none |
 | The REST API or the MCP server | Description, user name, rating, contact | No | The contact that you give, or none |
+| A Senja CSV file (**Testimonials > Import**) | Title, description, user name, subtitle, avatar, rating, date | Yes | None |
 
 On the public site, a contact can edit their own testimonials. A contact sees their own testimonials before approval.
 
 The widget endpoint accepts 5 testimonials a minute from each IP address.
+
+## Import testimonials from Senja
+
+You can import a CSV export from [Senja](https://senja.io). Each row with text becomes an approved testimonial.
+
+1. In Senja, export your testimonials as a CSV file.
+2. In the dashboard, open **Testimonials**.
+3. Click **Import**.
+4. In **CSV file**, select the file.
+5. Click **Import**.
+
+The page then shows "Imported N testimonials (M skipped)."
+
+### The columns
+
+| Senja column | Testimonial field |
+|---|---|
+| `text` | The description. A row without text is skipped. |
+| `customer_name` | The user name. If it is empty, the user name is `Anonymous`. |
+| `customer_tagline` | The subtitle |
+| `customer_company` | The subtitle, if `customer_tagline` is empty |
+| `customer_avatar` | The avatar. The app keeps only an `https` URL of 255 characters or fewer. |
+| `rating` | The rating, from 1 to 5. Another value, for example `0`, gives no rating. |
+| `title` | The title |
+| `date` | The creation date and the approval date. If the date is empty or not valid, the app uses the time of the import. |
+
+The file must have the columns `text` and `customer_name`. If one is missing, the app refuses the file with "This doesn't look like a Senja CSV export — the expected columns are missing."
+
+### Limits of the import
+
+- The file is a CSV file of 2 MB or less.
+- The file has 5000 rows or fewer. If the file has more rows, the app imports no row. Split the file and import each part.
+- The app skips a row with text of more than 5000 characters. It also skips a row with a title, a user name or a subtitle of more than 255 characters.
+- The app keeps the rating of a row also when the **Rating** setting is off.
+- The imported testimonials have no contact.
+- The app stores the URL of the avatar. It does not copy the image. The public site loads the image from that URL.
+- The app does not look for duplicates. If you import the same file two times, the project gets each testimonial two times.
+- A user can start 10 imports each minute.
 
 ## Approve a testimonial
 

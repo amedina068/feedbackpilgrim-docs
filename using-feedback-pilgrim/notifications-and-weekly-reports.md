@@ -17,6 +17,8 @@ Feedback Pilgrim sends all its notifications by email. The notifications go thro
 | Post commented | Someone comments on a post. | The author of the post, if the comment is not from the author |
 | Testimonial request (subject `Share your experience with us!`) | A post becomes complete and the automation is on. | The author of the post. Read [Testimonials](testimonials.md#ask-for-a-testimonial-automatically). |
 
+The emails to contacts come from the sender address of the instance, with the name of the project. If the project has a verified sending domain, they come from that domain. Read [Send email from your domain](sending-domain.md).
+
 The app sends one email to each voter, also if the contact voted more than one time. The author of the post does not get the voter email in addition.
 
 The button in an email to a contact opens the public site and signs in the contact. The link stays valid for 7 days.

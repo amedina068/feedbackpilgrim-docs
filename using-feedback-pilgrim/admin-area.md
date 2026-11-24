@@ -1,7 +1,7 @@
 ---
 title: The admin area
 description: The owner manages the users and the registration mode of the instance in /admin.
-order: 12
+order: 13
 ---
 
 # The admin area

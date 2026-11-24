@@ -47,6 +47,10 @@ const EXTERNAL_ENV = new Map([
   ['FEEDBACKPILGRIM_WEBHOOK_TOLERANCE', 'read by the Laravel config of the PHP SDK'],
   ['FEEDBACKPILGRIM_TIMEOUT', 'read by the Laravel config of the PHP SDK'],
   ['FEEDBACKPILGRIM_RETRIES', 'read by the Laravel config of the PHP SDK'],
+  // The SDK page names these Node.js error codes. They are not environment
+  // variables, but they have the same form.
+  ['EAI_AGAIN', 'a Node.js DNS error code on the SDK page'],
+  ['UND_ERR_CONNECT_TIMEOUT', 'a Node.js connect timeout error code on the SDK page'],
 ]);
 
 // Framework commands that the fallback mode accepts when `vendor/` is missing.

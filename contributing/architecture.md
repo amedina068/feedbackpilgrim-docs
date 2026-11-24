@@ -13,7 +13,7 @@ This page is a short map of the code. The file `ARCHITECTURE.md` in the app repo
 | Layer | Technology |
 |---|---|
 | Framework | Laravel 13 with the streamlined skeleton, PHP 8.3 |
-| Frontend | Vue 3, Alpine.js, Tailwind CSS 4, Quill, Chart.js |
+| Frontend | Vue 3, Tailwind CSS 4, Quill, Chart.js |
 | Build | Vite 8, with two build targets |
 | Auth | Session guards `web` (users) and `contact` (contacts), and Laravel Sanctum for API tokens |
 | Uploads | Spatie Media Library on the `public` disk |
@@ -72,6 +72,7 @@ User ──many-to-many (client_user)── Client
                                       ├─ ClientSetting (key and value)
                                       ├─ ContactAttribute (custom attribute names)
                                       ├─ Webhook ──< WebhookDelivery
+                                      ├─ SendingDomain (one for each client)
                                       └─ WeeklyReport
 ```
 
@@ -87,9 +88,11 @@ User ──many-to-many (client_user)── Client
 | Observer | `ContactObserver` queues `SyncContactAttributes` when the metadata changes. |
 | Event and listener | `PostCompletedEvent` and `RequestTestimonial` |
 | Notifications | `PostCommented`, `PostCompletedNotification`, `PostStatusChangedNotification`, `PostCreatedByContact`, `ReleaseNoteCommented`, `WeeklyReportNotification` |
-| Schedule | `fp:weekly` every Monday at 09:00, in `routes/console.php` |
+| Schedule | `fp:weekly` every Monday at 09:00, and `sending-domains:check` every 10 minutes, in `routes/console.php` |
 
 `App\Support\PostStageTransition` runs a stage change from the dashboard, and a status change from the REST API or the MCP server (`UpdatePost`). It sends the notifications, the webhook events and the Slack message.
+
+`Client::mailSender()` picks the mailer and the From address of each email to contacts. The actions in `app/Actions/SendingDomains/` are the only code that changes the SES identities of the sending domains.
 
 ## Build targets
 

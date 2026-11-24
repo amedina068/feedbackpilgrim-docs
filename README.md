@@ -30,6 +30,7 @@ The code of the app is in a separate repository, [amedina068/feedbackpilgrim](ht
 - [Release notes](using-feedback-pilgrim/release-notes.md)
 - [Testimonials](using-feedback-pilgrim/testimonials.md)
 - [Notifications and weekly reports](using-feedback-pilgrim/notifications-and-weekly-reports.md)
+- [Send email from your domain](using-feedback-pilgrim/sending-domain.md)
 - [The embeddable widget](using-feedback-pilgrim/widget.md)
 - [Webhooks and Slack](using-feedback-pilgrim/webhooks-and-slack.md)
 - [The admin area](using-feedback-pilgrim/admin-area.md)

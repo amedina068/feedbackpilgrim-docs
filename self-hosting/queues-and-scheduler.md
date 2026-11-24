@@ -30,11 +30,14 @@ The testimonial request email does not use the queue. The app sends it during th
 
 ## The scheduler
 
-The scheduler has one task:
+The scheduler has two tasks:
 
 | Task | When |
 |---|---|
 | `php artisan fp:weekly` | Every Monday at 09:00 UTC |
+| `php artisan sending-domains:check` | Every 10 minutes |
+
+`sending-domains:check` asks SES for the status of each pending sending domain. It also checks each verified domain again one time each day. It does not check a failed domain. Read [Send email from your domain](../using-feedback-pilgrim/sending-domain.md).
 
 To see the tasks and the next run, run:
 

@@ -44,10 +44,52 @@ The app has the package `symfony/mailgun-mailer`.
 ## Amazon SES
 
 1. Set `MAIL_MAILER=ses`.
-2. Set `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
-3. Set `AWS_DEFAULT_REGION`. The default is `us-east-1`.
+2. Set `AWS_SES_ACCESS_KEY_ID` and `AWS_SES_SECRET_ACCESS_KEY`.
+3. Set `AWS_SES_REGION`.
 
 The app has the AWS SDK for PHP.
+
+| Variable | If it is empty, the app uses | What it does |
+|---|---|---|
+| `AWS_SES_ACCESS_KEY_ID` | `AWS_ACCESS_KEY_ID` | The access key for SES. |
+| `AWS_SES_SECRET_ACCESS_KEY` | `AWS_SECRET_ACCESS_KEY` | The secret key for SES. |
+| `AWS_SES_REGION` | `AWS_DEFAULT_REGION`, then `us-east-1` | The SES region. |
+| `AWS_SES_CONFIGURATION_SET` | No configuration set | Optional. The SES configuration set for each email from the `ses` mailer. |
+
+An instance that used only the `AWS_*` values before keeps working. The `AWS_SES_*` values are optional.
+
+## Sending domains for projects
+
+A project can send the emails to its contacts from its own domain. Read [Send email from your domain](../using-feedback-pilgrim/sending-domain.md) for the steps of the user.
+
+The SES account of the instance sends for all projects. The projects do not give AWS keys. The emails from a verified domain always use the `ses` mailer. The other emails use `MAIL_MAILER`, so `MAIL_MAILER` can stay `smtp`.
+
+### Prepare the SES account
+
+1. Create an IAM user for the app. Give it only these actions:
+   - `ses:CreateEmailIdentity`
+   - `ses:GetEmailIdentity`
+   - `ses:DeleteEmailIdentity`
+   - `ses:PutEmailIdentityMailFromAttributes`
+   - `ses:TagResource`
+   - `ses:SendRawEmail`
+2. Request SES production access from AWS. In the sandbox, SES sends only to verified addresses, also from a verified domain.
+3. Turn on the account-level suppression list for bounces and complaints. All projects share the reputation of the account.
+4. Set `AWS_SES_ACCESS_KEY_ID`, `AWS_SES_SECRET_ACCESS_KEY` and `AWS_SES_REGION`.
+5. Make sure that the scheduler runs. Read [Queues and the scheduler](queues-and-scheduler.md).
+6. If the app runs on more than one server, set `CACHE_DRIVER` to `redis` or `database`.
+7. Give the queue worker 512 MB of memory or more, for example `php artisan queue:work --tries=3 --memory=512`. The AWS SDK uses more memory.
+
+If the scheduler does not run, the app checks a domain only when a user clicks **Check now**.
+
+The app holds a cache lock for each domain while it changes the SES identity. A `file` cache locks on one server only. Thus more than one server needs a shared cache store.
+
+### SES identities
+
+- The app creates one SES identity for each connected domain. It gives each identity the tag `app=feedbackpilgrim`.
+- The app deletes an identity only if the identity has this tag and no project has the domain. It never uses an identity that another app made.
+- If the SES account already has an identity for a domain without this tag, the connection fails with "This domain is already connected."
+- If SES refuses a request, the page shows "Amazon SES could not complete the request. Try again in a few minutes." The log has the AWS error code.
 
 ## Postmark
 
