@@ -11,11 +11,27 @@ Feedback Pilgrim has four server SDKs: JavaScript and TypeScript, PHP, Python an
 All four SDKs are version 0.1.0. The changelog of each SDK says "Unreleased".
 
 - The GitHub repository of each SDK is private now. You need read access to the repository to install an SDK.
-- No SDK is on a package registry yet. Install each SDK from git, as each section below shows.
+- No SDK is on a package registry yet. Install each SDK from git, as [Install from git](#install-from-git) shows.
+- Each SDK uses the MIT license. Read [License](#license).
 
 TODO(owner): The SDKs are not released, and their repositories are private. When will you make the repositories public, and on which registries (npm, Packagist, PyPI, RubyGems) will you publish the SDKs?
 
 ## What the 4 SDKs share
+
+### Install from git
+
+| Language | Install command |
+|---|---|
+| JavaScript and TypeScript | `npm install github:amedina068/feedbackpilgrim-js` |
+| PHP | Add the VCS repository to `composer.json`, then run `composer require feedbackpilgrim/feedbackpilgrim-php:dev-main` |
+| Python | `pip install "git+https://github.com/amedina068/feedbackpilgrim-python.git"` |
+| Ruby | `gem "feedbackpilgrim", github: "amedina068/feedbackpilgrim-ruby"` in your `Gemfile` |
+
+The repositories are private. Git, Composer and Bundler need read access and GitHub credentials. Each language section below gives the full steps.
+
+### License
+
+Each SDK uses the MIT license. The `LICENSE` file is in each repository, and the package manifest of each SDK says `MIT`. The Feedback Pilgrim app has its own license.
 
 ### The client
 
@@ -31,7 +47,7 @@ Each SDK has the same operations. The method names are different in each languag
 
 | Operation | JavaScript | PHP | Python | Ruby |
 |---|---|---|---|---|
-| [Init](../api/init.md) (sign-in link) | `init()` | `signInUrl()` | `sign_in_url()` | `sign_in_url` |
+| [Init](../api/init.md) (sign-in link) | `signInUrl()` | `signInUrl()` | `sign_in_url()` | `sign_in_url` |
 | [Posts](../api/posts.md) | `list`, `get`, `create`, `update` | `list`, `all`, `find`, `create`, `update` | `list`, `iter`, `get`, `create`, `update` | `list`, `find`, `create`, `update` |
 | [Release notes](../api/release-notes.md) | `list`, `get`, `create`, `update` | `list`, `all`, `find`, `create`, `update` | `list`, `iter`, `get`, `create`, `update` | `list`, `find`, `create`, `update` |
 | [Contacts](../api/contacts.md) | `list`, `get`, `upsert`, `update` | `list`, `all`, `find`, `upsert`, `update` | `list`, `iter`, `get`, `upsert`, `update` | `list`, `find`, `upsert`, `update` |
@@ -43,6 +59,7 @@ Each SDK has the same operations. The method names are different in each languag
 - The API always returns `405` for a delete of a post, a release note, a contact or a testimonial. Thus, the SDKs have no delete method for these records.
 - `approve` sets `approved_at` to the current time, or to a time that you give.
 - `upsert` creates a contact, or updates the contact of the project with the same email. It merges the custom fields. `update` does not change the custom fields.
+- The sign-in link method returns the link as a string. If the API returns `[]` (for example, for an empty email), it returns `null`, `None` or `nil`. It does not raise an error.
 
 ### The identity hash
 
@@ -80,10 +97,35 @@ The SDKs do not call `POST /api/v1/init`. The widget script `pilgrim.js` calls i
 Each SDK verifies the `X-FeedbackPilgrim-Signature-V2` header. Read [Verify the signature](../using-feedback-pilgrim/webhooks-and-slack.md#verify-the-signature) for the algorithm.
 
 - The SDK reads `X-FeedbackPilgrim-Signature-V2`, `X-FeedbackPilgrim-Timestamp` and `X-FeedbackPilgrim-Delivery`.
-- The SDK computes the HMAC-SHA256 of `<timestamp>.<raw body>` and compares the digests in constant time.
+- The SDK computes the HMAC-SHA256 of `<timestamp>.<raw body>`. It makes the signature header lowercase, then compares the digests in constant time. An uppercase hex signature is valid.
 - The SDK rejects a timestamp that is more than 300 seconds from the current time. The tolerance is a parameter.
-- The verified event has the event type, the post data, the timestamp and the delivery ID.
+- If the `X-FeedbackPilgrim-Delivery` header is missing or empty, the verification passes and the delivery ID is `null`, `None` or `nil`. Older instances do not send this header.
 - The SDK does not store delivery IDs. Each retry of a delivery sends the same ID. Store the IDs that you processed, and drop a repeated delivery.
+
+The verified event has the same fields in each SDK:
+
+| Field | JavaScript | PHP | Python | Ruby |
+|---|---|---|---|---|
+| The event type | `type` | `$type` | `type` | `type` |
+| The post | `data` | `$data` | `data` | `data` |
+| The decoded body | `payload` | `$payload` | `payload` | `payload` |
+| The Unix time of the attempt, an integer | `timestamp` | `$timestamp` | `timestamp` | `timestamp` |
+| The delivery ID | `deliveryId` | `$deliveryId` | `delivery_id` | `delivery_id` |
+
+The SDK does the checks in this order. The first check that fails gives the reason of the error:
+
+1. `timestamp`: the timestamp header is missing, or has a character that is not an ASCII digit.
+2. `signature`: the signature header is missing, or does not match the timestamp and the raw body.
+3. `timestamp`: the timestamp is outside the tolerance.
+4. `payload`: the signature is valid, but the body is not a JSON object.
+
+| Reason | JavaScript | PHP | Python | Ruby |
+|---|---|---|---|---|
+| Signature | `"signature"` | `VerificationFailure::Signature` | `"signature"` | `:signature` |
+| Timestamp | `"timestamp"` | `VerificationFailure::Timestamp` | `"timestamp"` | `:timestamp` |
+| Payload | `"payload"` | `VerificationFailure::Payload` | `"payload"` | `:payload` |
+
+The boolean function of each SDK does checks 1 to 3 only.
 
 Give the raw bytes of the body to the SDK. Do not parse the JSON and encode it again. The app escapes `/` as `\/` and each character that is not ASCII as `\uXXXX`. A new encoding gives other bytes, and the signature does not match.
 
@@ -110,9 +152,18 @@ Read [Errors](../api/overview.md#errors) for the error bodies.
 The SDKs retry a failed request 2 times by default.
 
 - The wait doubles on each retry: about 0.5, 1, 2 and 4 seconds, and 8 seconds at most. Half of each wait is random (jitter).
-- After a `429`, the SDK waits for the `Retry-After` time. If `Retry-After` is more than 60 seconds, the SDK does not retry. It gives the rate limit error.
+- The SDK retries a `429` for each request, because the server did not do the request.
+- The SDK retries each request, also a create, after a connection error before the send: a DNS failure, a refused connection or a connect timeout. The server did not get the request, so a retry is safe.
+- If a retried response has `Retry-After` (whole seconds or an HTTP date), the SDK waits that time. If `Retry-After` is more than 60 seconds, the SDK does not retry. It gives the error.
 - `GET`, `PATCH`, `DELETE` and the contact `upsert` are idempotent. The SDK retries them after a `429`, a `5xx`, a timeout or a connection error.
-- A create and a sign-in request are not idempotent. A second copy can make a second record. The SDK retries them only after a `429`, or after a connection error before the server got the request.
+- A create and a sign-in request are not idempotent. A second create can make a second record, and each sign-in request makes a new link. The SDK retries them only after a `429` or a connection error before the send. It does not retry them after a `5xx`, a read timeout or a reset after the send.
+
+| Error before the send | JavaScript | PHP | Python | Ruby |
+|---|---|---|---|---|
+| DNS failure | `ENOTFOUND`, `EAI_AGAIN` | cURL error 5 or 6 | `socket.gaierror` | `SocketError` |
+| Refused connection | `ECONNREFUSED` | cURL error 7 | `ConnectionRefusedError` | `Errno::ECONNREFUSED` |
+| Connect timeout | `UND_ERR_CONNECT_TIMEOUT` | cURL error 28, "Connection timed out" | A timeout before the read | `Net::OpenTimeout` |
+| The flag on the error | `ConnectionError.beforeSend` | `ConnectionException::$beforeSend` | `APIConnectionError.before_send` | `ConnectionError#before_send?` |
 - The SDK does not retry another `4xx` status.
 
 The limit is 120 requests each minute for each user. All the tokens of one user share this limit. Read [Rate limit](../api/overview.md#rate-limit).
@@ -127,13 +178,10 @@ A list returns one page: the Laravel paginator with `data`, `current_page`, `las
 
 | Topic | JavaScript | PHP | Python | Ruby |
 |---|---|---|---|---|
-| Install from the git URL | Does not work. Build the package from a clone. | Works with `:dev-main` | Works | Works |
 | Settings from environment variables | No | Laravel only | URL and token | URL, token and both secrets |
 | Identity hash | Async function | Static method, or a client method | Function | Module method |
 | `per_page` of the "read all" helper | The `per_page` that you give | 100 | 100 | The `per_page` of the first page |
-| A missing `X-FeedbackPilgrim-Delivery` header | The verification fails (`delivery`) | `deliveryId` is `null` | `delivery_id` is `None` | `delivery_id` is `nil` |
 | A timeout | `TimeoutError` | `ConnectionException` | `APITimeoutError` | `ConnectionError` |
-| Init with no contact email (the API returns `[]`) | `{}` | `null` | Raises `FeedbackPilgrimError` | `nil` |
 | Framework integration | Examples for Next.js and Express | Laravel service provider and facade | Examples for Django and FastAPI | Rails Railtie and generator |
 
 ## JavaScript and TypeScript
@@ -142,32 +190,13 @@ The package name is `feedbackpilgrim`. The repository is `amedina068/feedbackpil
 
 ### Install
 
-The README of the SDK gives `npm install feedbackpilgrim`. This command does not work yet, because the package is not on npm.
+Install the package from GitHub:
 
-An install from the git URL also does not work. The repository does not have the built `dist` folder, and it has no `prepare` script. Thus, npm installs the package without code, and Node.js cannot find the module when you import it.
+```sh
+npm install github:amedina068/feedbackpilgrim-js
+```
 
-Build the package from a clone instead:
-
-1. Clone the repository:
-
-   ```sh
-   git clone https://github.com/amedina068/feedbackpilgrim-js.git
-   cd feedbackpilgrim-js
-   ```
-
-2. Build the package and make a tarball:
-
-   ```sh
-   npm ci
-   npm run build
-   npm pack
-   ```
-
-3. In your app, install the tarball:
-
-   ```sh
-   npm install ../feedbackpilgrim-js/feedbackpilgrim-0.1.0.tgz
-   ```
+The package has a `prepare` script. npm runs it during the install, and it builds the `dist` folder. For Bun, use `bun add github:amedina068/feedbackpilgrim-js`.
 
 ### Requirements
 
@@ -252,7 +281,7 @@ Each `ApiError` has `status`, `body` and `headers`. Use `instanceof`, or use `is
 
 ### Retries
 
-The SDK uses the rules in [Retries](#retries). It also waits for a `Retry-After` header on a `5xx` response. These calls are not idempotent: `init()`, `posts.create()`, `releaseNotes.create()`, `testimonials.create()` and `tags.create()`.
+The SDK uses the rules in [Retries](#retries). These calls are not idempotent: `signInUrl()`, `posts.create()`, `releaseNotes.create()`, `testimonials.create()` and `tags.create()`.
 
 ### Webhook verification
 
@@ -268,13 +297,14 @@ const event = await verifyWebhook({
 	tolerance: 300, // seconds, the default
 });
 
-event.deliveryId; // the X-FeedbackPilgrim-Delivery UUID
-event.timestamp; // the Unix time of the attempt, in seconds
-event.event; // "post.status_changed"
+event.type; // "post.status_changed"
 event.data; // { id, title, content, status, board_id, contact_id, stage }
+event.payload; // the decoded body
+event.timestamp; // the Unix time of the attempt, in seconds
+event.deliveryId; // the X-FeedbackPilgrim-Delivery UUID, or null
 ```
 
-If the check fails, `verifyWebhook()` throws a `WebhookVerificationError`. Its `reason` is `signature`, `timestamp` or `delivery`. Answer with a `400` status, and do not process the body.
+If the check fails, `verifyWebhook()` throws a `WebhookVerificationError`. Its `reason` is `timestamp`, `signature` or `payload`. Answer with a `400` status, and do not process the body.
 
 `verifyWebhookSignature()` takes `body`, `signature`, `timestamp`, `secret` and `tolerance`. Give it the values of the headers.
 
@@ -296,7 +326,7 @@ app.post(
 				headers: req.headers,
 				secret: process.env.FEEDBACKPILGRIM_WEBHOOK_SECRET!,
 			});
-			console.log(event.deliveryId, event.event, event.data.title);
+			console.log(event.deliveryId, event.type, event.data.title);
 			res.sendStatus(204);
 		} catch (error) {
 			if (error instanceof WebhookVerificationError) {
@@ -334,13 +364,13 @@ normalizeEmail("  JOSÉ@Example.com "); // "josÉ@example.com"
 
 ### Sign-in link
 
-`init()` sends `POST /api/public/v1/init`. It returns `{ auth_url }`. If the API returns `[]`, `init()` returns `{}`, and `auth_url` is `undefined`.
+`signInUrl()` sends `POST /api/public/v1/init`. It returns the link as a string. If the API returns `[]`, `signInUrl()` returns `null`.
 
 ```ts
-const { auth_url } = await pilgrim.init({
+const url = await pilgrim.signInUrl({
 	email: "jane@example.com",
 	name: "Jane Doe",
-	plan: "premium", // a custom field
+	customFields: { plan: "premium" },
 });
 ```
 
@@ -366,7 +396,7 @@ The Composer package name is `feedbackpilgrim/feedbackpilgrim-php`. The reposito
    composer require feedbackpilgrim/feedbackpilgrim-php:dev-main guzzlehttp/guzzle
    ```
 
-The README of the SDK gives the command without `:dev-main`. The repository has no version tag yet, so Composer stops with this error: `Could not find a version of package feedbackpilgrim/feedbackpilgrim-php matching your minimum-stability (stable)`.
+The repository has no version tag yet, so the `:dev-main` constraint is necessary. Without it, Composer stops with this error: `Could not find a version of package feedbackpilgrim/feedbackpilgrim-php matching your minimum-stability (stable)`.
 
 Composer needs a GitHub token to read the private repository. If Composer cannot read it, add a token: `composer config --global github-oauth.github.com <your-github-token>`.
 
@@ -459,7 +489,7 @@ Each exception extends `FeedbackPilgrim\Exceptions\FeedbackPilgrimException`.
 
 ### Retries
 
-The SDK uses the rules in [Retries](#retries). It also waits for a `Retry-After` header on a `5xx` response. `create()` and `signInUrl()` are not idempotent.
+The SDK uses the rules in [Retries](#retries). `create()` and `signInUrl()` are not idempotent.
 
 ### Webhook verification
 
@@ -481,11 +511,11 @@ $valid = Webhook::isValid(
 
 - `type`: the event, for example `post.completed`. `is(WebhookEvent::POST_COMPLETED)` compares it.
 - `data`: the post, as an array.
-- `deliveryId`: the `X-FeedbackPilgrim-Delivery` UUID, or `null` if the header is missing.
+- `deliveryId`: the `X-FeedbackPilgrim-Delivery` UUID, or `null` if the header is missing or empty.
 - `timestamp`: the Unix time of the attempt.
 - `payload`: the decoded body.
 
-The `$reason` of the exception is a `VerificationFailure`: `Signature`, `Timestamp` or `Payload`. `Payload` means that the signature is valid, but the body is not a JSON object.
+The `$reason` of the exception is a `VerificationFailure`: `Timestamp`, `Signature` or `Payload`. [Webhook verification](#webhook-verification) gives the order of the checks. `type` comes from the signed body, not from the `X-FeedbackPilgrim-Event` header.
 
 In Laravel, add the route to `routes/api.php`. The `api` routes have no CSRF check.
 
@@ -507,7 +537,8 @@ Route::post('/webhooks/feedback-pilgrim', function (Request $request) {
         abort(400);
     }
 
-    if (Cache::add("feedbackpilgrim-delivery:{$event->deliveryId}", true, now()->addDay())) {
+    // Older instances send no delivery ID.
+    if ($event->deliveryId === null || Cache::add("feedbackpilgrim-delivery:{$event->deliveryId}", true, now()->addDay())) {
         ProcessFeedbackEvent::dispatch($event->type, $event->data);
     }
 
@@ -532,7 +563,7 @@ In Laravel, `FeedbackPilgrim::identityHash($request->user()->email)` reads the `
 
 ### Sign-in link
 
-`signInUrl()` sends `POST /api/public/v1/init`. It returns the link, or `null` when the instance gets no email.
+`signInUrl()` sends `POST /api/public/v1/init`. It returns the link, or `null` when the API returns `[]`.
 
 ```php
 $url = $pilgrim->signInUrl('jane@example.com', name: 'Jane Doe', customFields: ['plan' => 'pro']);
@@ -621,23 +652,23 @@ Each `APIError` has `status_code`, `message`, `body` and `headers`.
 
 ### Retries
 
-The client uses the rules in [Retries](#retries). A custom transport tells the client whether the instance got the request: raise `APIConnectionError(message, request_sent=False)` only when the instance did not get it. Then the client can retry a `POST`.
+The client uses the rules in [Retries](#retries). A custom transport raises `APIConnectionError` when it gets no response, and `APITimeoutError` after a timeout. Set `before_send=True` only for a DNS failure, a refused connection or a connect timeout. Then the client retries every request.
 
 ### Webhook verification
 
-`construct_event()` verifies a delivery and returns a `WebhookEvent`. `verify_signature()` returns a boolean.
+`verify_webhook()` verifies a delivery and returns a `WebhookEvent`. `verify_signature()` returns a boolean.
 
 ```python
 import os
 
-from feedbackpilgrim import WebhookVerificationError, construct_event, verify_signature
+from feedbackpilgrim import WebhookVerificationError, verify_signature, verify_webhook
 
 secret = os.environ["FEEDBACKPILGRIM_WEBHOOK_SECRET"]
 
 try:
-    event = construct_event(raw_body, headers, secret, tolerance=300)
+    event = verify_webhook(raw_body, headers, secret, tolerance=300)
 except WebhookVerificationError as error:
-    ...  # Send 400. error.reason is "signature" or "timestamp".
+    ...  # Send 400. error.reason is "timestamp", "signature" or "payload".
 
 valid = verify_signature(
     raw_body,
@@ -650,10 +681,10 @@ valid = verify_signature(
 The header names are not case-sensitive. The `WebhookEvent` has these fields:
 
 - `type`: `post.created`, `post.status_changed` or `post.completed`.
-- `delivery_id`: the UUID of the delivery, or `None` if the header is missing.
+- `data`: `id`, `title`, `content`, `status`, `board_id`, `contact_id` and `stage`.
+- `payload`: the decoded body.
 - `timestamp`: the Unix time of the attempt.
-- `post`: `id`, `title`, `content`, `status`, `board_id`, `contact_id` and `stage`.
-- `raw`: the decoded body.
+- `delivery_id`: the UUID of the delivery, or `None` if the header is missing or empty.
 
 In Django, the view must be `csrf_exempt`, because Feedback Pilgrim does not send a CSRF token:
 
@@ -662,22 +693,24 @@ from django.conf import settings
 from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
-from feedbackpilgrim import WebhookVerificationError, construct_event
+from feedbackpilgrim import WebhookVerificationError, verify_webhook
 
 
 @csrf_exempt
 @require_POST
 def feedbackpilgrim_webhook(request: HttpRequest) -> HttpResponse:
     try:
-        event = construct_event(
+        event = verify_webhook(
             request.body, request.headers, settings.FEEDBACKPILGRIM_WEBHOOK_SECRET
         )
     except WebhookVerificationError:
         return HttpResponseBadRequest()
 
-    _, first_time = ProcessedDelivery.objects.get_or_create(delivery_id=event.delivery_id)
+    first_time = True
+    if event.delivery_id:  # older instances send no delivery ID
+        _, first_time = ProcessedDelivery.objects.get_or_create(delivery_id=event.delivery_id)
     if first_time and event.type == "post.completed":
-        notify_voters(event.post.id)
+        notify_voters(event.data.id)
     return HttpResponse(status=204)
 ```
 
@@ -695,7 +728,7 @@ Do not normalize the email with `str.strip()` or `str.lower()` first. They also 
 
 ### Sign-in link
 
-`sign_in_url()` sends `POST /api/public/v1/init` and returns the link. If the instance sends no link, it raises `FeedbackPilgrimError`.
+`sign_in_url()` sends `POST /api/public/v1/init` and returns the link. If the API returns `[]`, it returns `None`.
 
 ```python
 url = client.sign_in_url("jane@example.com", name="Jane Doe", custom_fields={"plan": "premium"})
@@ -790,8 +823,8 @@ Each error is a `FeedbackPilgrim::Error`.
 | `ValidationError` | `422`. `errors` gives the messages for each field. |
 | `RateLimitError` | `429`. `retry_after` gives the seconds to wait. |
 | `ServerError` | `500` or more |
-| `ApiError` | Another status. All the HTTP errors above are an `ApiError`. Each has `status`, `body` and `message`. |
-| `WebhookVerificationError` | A webhook delivery is not valid. `reason` is `:signature` or `:timestamp`. |
+| `ApiError` | Another status. All the HTTP errors above are an `ApiError`. Each has `status`, `body`, `message` and `retry_after`. |
+| `WebhookVerificationError` | A webhook delivery is not valid. `reason` is `:timestamp`, `:signature` or `:payload`. |
 
 ### Retries
 
@@ -803,10 +836,11 @@ The client uses the rules in [Retries](#retries). Each `POST` is not idempotent,
 
 ```ruby
 event = FeedbackPilgrim::Webhook.verify(request.raw_post, request.headers, tolerance: 300)
-event.name         # "post.status_changed"
+event.type         # "post.status_changed"
 event.data.title   # the title of the post
+event.payload      # the decoded body, a Hash
+event.timestamp    # the Unix time of the attempt, an Integer
 event.delivery_id  # the X-FeedbackPilgrim-Delivery UUID, or nil
-event.timestamp    # a Time
 
 FeedbackPilgrim::Webhook.valid?(
   request.raw_post,
@@ -828,8 +862,9 @@ class FeedbackpilgrimWebhooksController < ActionController::API
   def create
     event = FeedbackPilgrim::Webhook.verify(request.raw_post, request.headers)
 
-    if ProcessedDelivery.create_or_find_by(delivery_id: event.delivery_id).previously_new_record?
-      PostChangedJob.perform_later(event.name, event.data.to_h)
+    # Older instances send no delivery ID.
+    if event.delivery_id.nil? || ProcessedDelivery.create_or_find_by(delivery_id: event.delivery_id).previously_new_record?
+      PostChangedJob.perform_later(event.type, event.data.to_h)
     end
 
     head :ok
