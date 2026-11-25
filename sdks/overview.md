@@ -10,11 +10,9 @@ Feedback Pilgrim has four server SDKs: JavaScript and TypeScript, PHP, Python an
 
 All four SDKs are version 0.1.0. The changelog of each SDK says "Unreleased".
 
-- The GitHub repository of each SDK is private now. You need read access to the repository to install an SDK.
+- The GitHub repository of each SDK is public. Install each SDK from its repository.
 - No SDK is on a package registry yet. Install each SDK from git, as [Install from git](#install-from-git) shows.
 - Each SDK uses the MIT license. Read [License](#license).
-
-TODO(owner): The SDKs are not released, and their repositories are private. When will you make the repositories public, and on which registries (npm, Packagist, PyPI, RubyGems) will you publish the SDKs?
 
 ## What the 4 SDKs share
 
@@ -27,7 +25,7 @@ TODO(owner): The SDKs are not released, and their repositories are private. When
 | Python | `pip install "git+https://github.com/amedina068/feedbackpilgrim-python.git"` |
 | Ruby | `gem "feedbackpilgrim", github: "amedina068/feedbackpilgrim-ruby"` in your `Gemfile` |
 
-The repositories are private. Git, Composer and Bundler need read access and GitHub credentials. Each language section below gives the full steps.
+The repositories are public. Each language section below gives the full steps.
 
 ### License
 
@@ -398,7 +396,7 @@ The Composer package name is `feedbackpilgrim/feedbackpilgrim-php`. The reposito
 
 The repository has no version tag yet, so the `:dev-main` constraint is necessary. Without it, Composer stops with this error: `Could not find a version of package feedbackpilgrim/feedbackpilgrim-php matching your minimum-stability (stable)`.
 
-Composer needs a GitHub token to read the private repository. If Composer cannot read it, add a token: `composer config --global github-oauth.github.com <your-github-token>`.
+If GitHub limits the API requests of Composer, add a token: `composer config --global github-oauth.github.com <your-github-token>`.
 
 ### Requirements
 
@@ -581,8 +579,6 @@ pip install "git+https://github.com/amedina068/feedbackpilgrim-python.git"
 uv add "git+https://github.com/amedina068/feedbackpilgrim-python.git"
 ```
 
-Git needs read access to the private repository.
-
 ### Requirements
 
 Python 3.10, 3.11, 3.12, 3.13 and 3.14. CI runs the tests, the lint and the type check on each version.
@@ -747,8 +743,6 @@ The gem name is `feedbackpilgrim`. The repository is `amedina068/feedbackpilgrim
    ```
 
 2. Run `bundle install`.
-
-Bundler needs read access to the private repository.
 
 ### Requirements
 
