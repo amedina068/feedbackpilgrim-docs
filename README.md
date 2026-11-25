@@ -1,5 +1,8 @@
 # Feedback Pilgrim documentation
 
+[![CI](https://github.com/amedina068/feedbackpilgrim-docs/actions/workflows/ci.yml/badge.svg)](https://github.com/amedina068/feedbackpilgrim-docs/actions/workflows/ci.yml)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/amedina068/feedbackpilgrim-docs/badge)](https://scorecard.dev/viewer/?uri=github.com/amedina068/feedbackpilgrim-docs)
+
 This repository holds the documentation of Feedback Pilgrim, a self-hosted feedback board. Customers post feature requests, vote and comment on a public site for each project. The team sorts the requests by the revenue of the customers who ask for them.
 
 Each Markdown file is one page. The folder of a file is the section of the page.

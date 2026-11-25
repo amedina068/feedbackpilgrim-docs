@@ -1,0 +1,33 @@
+name: Error in the docs
+description: A page says something that is not correct, or that does not agree with the app.
+title: "Docs error: "
+labels: ["documentation", "bug", "needs-triage"]
+body:
+  - type: input
+    id: page
+    attributes:
+      label: Page
+      description: The path of the page.
+      placeholder: self-hosting/backups.md
+    validations:
+      required: true
+  - type: textarea
+    id: page-says
+    attributes:
+      label: What the page says
+      description: Quote the text.
+      render: markdown
+    validations:
+      required: true
+  - type: textarea
+    id: correct
+    attributes:
+      label: What is correct
+      description: What the app does. If you know the file in the app code, give its path.
+    validations:
+      required: true
+  - type: input
+    id: app-version
+    attributes:
+      label: Version of the app
+      description: The commit of the app that you use.

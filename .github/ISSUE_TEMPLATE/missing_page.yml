@@ -1,0 +1,25 @@
+name: Missing information
+description: The docs do not explain a feature, a setting or a task.
+title: "Missing docs: "
+labels: ["documentation", "enhancement", "needs-triage"]
+body:
+  - type: textarea
+    id: task
+    attributes:
+      label: What you tried to do
+      description: The task.
+      placeholder: Send the votes of a post to my CRM with a webhook.
+    validations:
+      required: true
+  - type: textarea
+    id: looked
+    attributes:
+      label: Where you looked
+      description: The pages that you read.
+  - type: textarea
+    id: missing
+    attributes:
+      label: What was missing
+      description: The question that the docs did not answer.
+    validations:
+      required: true
