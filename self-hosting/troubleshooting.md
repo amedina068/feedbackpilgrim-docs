@@ -6,16 +6,50 @@ order: 7
 
 # Troubleshooting
 
+## Run the doctor
+
+`fp:doctor` checks the database, the migrations, the queue, the scheduler, the storage link, the mail settings and the domain values. For each problem, it gives the fix.
+
+```bash
+docker exec feedbackpilgrim php artisan fp:doctor
+```
+
+- Add `--fix` to apply the safe fixes, for example a missing storage link.
+- Add `--json` to get one JSON object for a script or an AI agent.
+- Run `fp:status --json` for a short summary of the instance.
+
 ## Read the log
 
-With Docker, set `LOG_STACK=stderr` in `.env`, then read the log of a service:
+With the Docker image, the log goes to the container log:
+
+```bash
+docker logs --tail 100 feedbackpilgrim
+```
+
+With Docker Compose, read the log of the `web` service:
 
 ```bash
 docker compose logs web
-docker compose logs queue
 ```
 
 Without Docker, the default `LOG_STACK=daily` writes the log to `storage/logs`.
+
+## The installer stops
+
+The installer prints an `Error:` line and a `Fix:` line. Do the fix, then run the installer again. The full log is in `/tmp/feedbackpilgrim-install.log`.
+
+| Error | Cause |
+|---|---|
+| `Docker is not installed.` | Install Docker with `curl -fsSL https://get.docker.com \| sh`. |
+| `Your user cannot use Docker.` | Run the installer with `sudo`, or add your user to the `docker` group. |
+| `Port 80 is in use.` | Another web server uses the port. Stop it, or read [Reverse proxy and TLS](reverse-proxy-and-tls.md#your-own-proxy). |
+| `The container stopped.` | Read `docker logs feedbackpilgrim`. |
+
+## The setup page asks for the setup URL
+
+The page "Find the setup URL" shows when you open `/setup` without the correct token. The token is in the setup URL. Run `docker logs feedbackpilgrim` or `php artisan fp:setup-url`, then open the URL from the output.
+
+If the token in the URL is not correct, `APP_KEY` changed after the log printed the URL. Run `fp:setup-url` again.
 
 ## The public site of a project returns 404
 
@@ -65,7 +99,7 @@ Without a valid `userHash`, the widget does not sign in a contact that exists al
 
 ## Emails do not arrive
 
-1. Make sure that the queue worker runs. With Docker, run `docker compose ps` and look at the `queue` service.
+1. Make sure that the queue worker runs. Run `php artisan fp:status` and read the queue heartbeat.
 2. Look for failed jobs with `php artisan queue:failed`.
 3. Make sure that the `MAIL_*` values are correct. Read [Mail](mail.md).
 
@@ -84,11 +118,11 @@ Without a valid `userHash`, the widget does not sign in a contact that exists al
 
 ## A change in `.env` has no effect
 
-The app caches the configuration. With Docker, run `docker compose up -d`. Without Docker, run `php artisan optimize`, then `php artisan queue:restart`.
+The app caches the configuration. With `docker run`, remove the container and start it again with the new values. With Docker Compose, run `docker compose up -d`. Without Docker, run `php artisan optimize`, then `php artisan queue:restart`.
 
-## The `web` service is not healthy
+## The container is not healthy
 
-1. Read `docker compose logs web`.
+1. Read `docker logs feedbackpilgrim`, or `docker compose logs web` with Compose.
 2. If the log shows a database error, make sure that `DB_PASSWORD` in `.env` is the password of the `mysql` volume. MySQL sets the password only when it creates the volume.
 3. Open `/up` on the host. It must return status 200.
 

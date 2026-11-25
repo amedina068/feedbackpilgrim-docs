@@ -137,6 +137,18 @@ If the app checkout has a `vendor/` folder, the script reads the command list fr
 
 The CI runs the same script on each push and pull request. The CI clones the public app repository `amedina068/feedbackpilgrim` and runs all the checks.
 
+## llms.txt for AI agents
+
+`llms.txt` lists each page with its description, in the order of the "Pages" list above. `llms-full.txt` holds the text of all the pages in one file. AI agents read them from the raw GitHub URLs.
+
+The script `scripts/build-llms.mjs` writes both files. After you add, move or change a page, run:
+
+```bash
+node scripts/build-llms.mjs
+```
+
+The CI runs `node scripts/build-llms.mjs --check`. The check fails if a file is not current.
+
 ## The MCP tools reference
 
 `mcp/tools-reference.md` is written by hand from the tool classes in `app/Mcp/Tools` of the app. If a tool changes, update the page in the same pull request.

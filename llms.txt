@@ -1,0 +1,72 @@
+# Feedback Pilgrim
+
+> Feedback Pilgrim is a self-hosted feedback board. Customers post feature requests, vote and comment on a public site for each project. The team sorts the requests by the revenue of the customers who ask for them.
+
+Install it with one command: `docker run -d --name feedbackpilgrim -p 8080:8080 -v feedbackpilgrim:/data ghcr.io/amedina068/feedbackpilgrim`. Then open the setup URL on the last line of `docker logs feedbackpilgrim`.
+
+An AI agent that installs the app must follow https://raw.githubusercontent.com/amedina068/feedbackpilgrim/main/INSTALL.md.
+
+## Getting started
+
+- [Introduction](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/getting-started/introduction.md): What Feedback Pilgrim is, what it does, and how the parts fit together.
+- [Install with Docker](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/getting-started/installation-docker.md): Run Feedback Pilgrim in one container with one volume, get HTTPS for your domain, and create the owner account.
+- [Install without Docker](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/getting-started/installation-manual.md): Install Feedback Pilgrim on a server with PHP and a web server, without Docker. SQLite or MySQL, with or without Redis.
+- [Configuration](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/getting-started/configuration.md): The environment variables of Feedback Pilgrim, and how the dashboard domain and the project subdomains work.
+- [Upgrading](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/getting-started/upgrading.md): Update an instance to a new version of the code, and the steps for instances made with older code.
+- [Release notes](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/getting-started/release-notes.md): The changes to Feedback Pilgrim that users can see, newest first.
+
+## Using Feedback Pilgrim
+
+- [Projects and the public site](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/using-feedback-pilgrim/projects-and-public-site.md): Create a project, switch between projects, and learn what the public site of a project shows.
+- [Boards](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/using-feedback-pilgrim/boards.md): Group the posts of a project into boards, and choose which boards the public site shows.
+- [Posts, votes and comments](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/using-feedback-pilgrim/posts-votes-and-comments.md): How posts arrive, how to publish and archive them, and how votes, comments, notes and merges work.
+- [Stages and the roadmap](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/using-feedback-pilgrim/stages-and-roadmap.md): The status pipeline of a project, the kanban board, and the public roadmap.
+- [Tags](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/using-feedback-pilgrim/tags.md): Label posts, contacts and release notes with the tags of a project.
+- [Contacts and revenue](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/using-feedback-pilgrim/contacts.md): Where contacts come from, how MRR and LTV weight the posts, and how custom attributes work.
+- [Release notes](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/using-feedback-pilgrim/release-notes.md): Write release notes, show them on the public site, and open the newest note in your app with the widget.
+- [Testimonials](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/using-feedback-pilgrim/testimonials.md): Collect testimonials with an optional rating, import them from Senja, approve them, and ask for them by email when a request ships.
+- [Notifications and weekly reports](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/using-feedback-pilgrim/notifications-and-weekly-reports.md): The emails that Feedback Pilgrim sends to contacts and users, and the weekly activity report.
+- [Send email from your domain](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/using-feedback-pilgrim/sending-domain.md): Connect a domain of your project, so that the emails to your contacts come from that domain through Amazon SES.
+- [The embeddable widget](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/using-feedback-pilgrim/widget.md): Add pilgrim.js to your app to sign in your users on the public site, and to show the release notes and the testimonial form.
+- [Webhooks and Slack](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/using-feedback-pilgrim/webhooks-and-slack.md): Send signed events to your own server, and post messages to a Slack channel.
+- [The admin area](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/using-feedback-pilgrim/admin-area.md): The owner manages the users and the registration mode of the instance in /admin.
+
+## REST API
+
+- [API overview](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/api/overview.md): The base URL, the request format, pagination, errors and rate limits of the Feedback Pilgrim REST API.
+- [Authentication](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/api/authentication.md): Make an API token for a project, send it as a bearer token, and delete it.
+- [Init](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/api/init.md): Create or update a contact from your server and get a sign-in link to the public site.
+- [Posts](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/api/posts.md): List, read, create and update the posts of a project through the REST API.
+- [Release notes](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/api/release-notes.md): List, read, create and update the release notes of a project through the REST API.
+- [Contacts](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/api/contacts.md): List, read, create or update, and update the contacts of a project through the REST API.
+- [Testimonials](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/api/testimonials.md): List, read, create, update and approve the testimonials of a project through the REST API.
+- [Tags](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/api/tags.md): List, create, rename and delete the tags of a project through the REST API.
+- [OpenAPI and Postman](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/api/openapi.md): Get the OpenAPI spec and the Postman collection of the API, and import them in Postman, Insomnia or Bruno.
+- [Widget init](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/api/widget.md): The call that the widget script makes from the browser with the publishable key, and the identity hash that your server makes for it.
+
+## SDKs
+
+- [SDKs](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/sdks/overview.md): Install and use the Feedback Pilgrim SDKs for JavaScript and TypeScript, PHP, Python and Ruby.
+
+## MCP server
+
+- [MCP server](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/mcp/overview.md): Connect an AI agent to the data of a project through the Model Context Protocol server of Feedback Pilgrim.
+- [Connect a client](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/mcp/connecting-clients.md): Add the Feedback Pilgrim MCP server to Claude Code, Claude Desktop, Codex, Cursor and other MCP clients.
+- [MCP tools reference](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/mcp/tools-reference.md): The name, the purpose and the arguments of each tool of the Feedback Pilgrim MCP server.
+
+## Self-hosting
+
+- [Reverse proxy and TLS](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/self-hosting/reverse-proxy-and-tls.md): Get automatic HTTPS from the container, or put your own reverse proxy with TLS in front of Feedback Pilgrim.
+- [Backups](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/self-hosting/backups.md): What to back up on a Feedback Pilgrim instance, and how to back up and restore the /data volume or the MySQL stack.
+- [Queues and the scheduler](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/self-hosting/queues-and-scheduler.md): Run the queue worker and the scheduler, and handle failed jobs.
+- [Mail](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/self-hosting/mail.md): Configure SMTP, Mailgun or Amazon SES for the emails of Feedback Pilgrim.
+- [Accounts and registration](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/self-hosting/accounts-and-registration.md): Create the owner, make a user an owner, and choose who can sign up on the instance.
+- [Recover access](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/self-hosting/recover-access.md): Set a new password without email, find a lost setup URL, and restore an owner.
+- [Troubleshooting](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/self-hosting/troubleshooting.md): Find the cause of common problems with the domains, the widget, the API, the emails and the Docker stack.
+
+## Contributing to the app
+
+- [Architecture](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/contributing/architecture.md): The request surfaces, the tenancy rules, the domain model and the build targets of the Feedback Pilgrim code.
+- [Development setup](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/contributing/development-setup.md): Run Feedback Pilgrim on your computer for development.
+- [Testing](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/contributing/testing.md): Run the PHP and JavaScript tests of Feedback Pilgrim, and learn which tests guard which rules.
+- [Release process](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/contributing/release-process.md): Write release notes and changelog lines for a change that users can see, and how a new version is made and published.

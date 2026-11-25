@@ -1,28 +1,26 @@
 ---
 title: Install without Docker
-description: Install Feedback Pilgrim on a server with PHP, MySQL and Redis, without Docker.
+description: Install Feedback Pilgrim on a server with PHP and a web server, without Docker. SQLite or MySQL, with or without Redis.
 order: 3
 ---
 
 # Install without Docker
 
-This page installs Feedback Pilgrim on a Linux server with PHP, a web server, MySQL and Redis. The Docker files of the repository show the same steps. Read [Install with Docker](installation-docker.md) for the Docker way.
+This page installs Feedback Pilgrim on a Linux server with PHP and a web server. The Docker image is faster to install and does these steps for you. Read [Install with Docker](installation-docker.md).
 
 ## Requirements
 
 | Item | Version or detail |
 |---|---|
 | PHP | 8.3 or later (`composer.json` requires `^8.3`) |
-| PHP extensions | `pdo_mysql`, `redis`, `gd`, `exif`, `pcntl`, `opcache` and `zip`. The Docker image has these extensions. |
+| PHP extensions | `pdo_sqlite` or `pdo_mysql`, `gd`, `exif`, `pcntl`, `opcache` and `zip`. Add `redis` if you use Redis. The Docker image has these extensions. |
 | Composer | 2 |
 | Node.js | 24, to build the assets. The server does not need Node.js after the build. |
-| MySQL | The Docker stack uses MySQL 8.4. |
-| Redis | The Docker stack uses Redis 7.4. |
+| A database | SQLite 3, or MySQL 8.4. For SQLite, the `sqlite3` binary must also be installed. |
+| Redis | Optional. The Compose stack uses Redis 7.4. |
 | A web server | Its document root must be the `public/` folder. |
 
-Redis is necessary. The example environment uses Redis for the cache, the sessions and the queue. The widget also stores the last-login time of each contact in Redis directly.
-
-The app uses the `phpredis` client (`REDIS_CLIENT=phpredis`), so PHP needs the `redis` extension.
+Without Redis, set `CACHE_DRIVER`, `SESSION_DRIVER` and `QUEUE_CONNECTION` to `database`. With Redis, the app uses the `phpredis` client (`REDIS_CLIENT=phpredis`), so PHP needs the `redis` extension.
 
 The [`deploy/`](https://github.com/amedina068/feedbackpilgrim/tree/main/deploy) folder of the app repository has example files for an install without Docker:
 

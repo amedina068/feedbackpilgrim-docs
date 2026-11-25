@@ -1,48 +1,129 @@
 ---
 title: Install with Docker
-description: Run Feedback Pilgrim with Docker Compose, create the owner account and open the dashboard.
+description: Run Feedback Pilgrim in one container with one volume, get HTTPS for your domain, and create the owner account.
 order: 2
 ---
 
 # Install with Docker
 
-The repository has a `Dockerfile` and a `docker-compose.yml`. The Compose stack has five services:
+Feedback Pilgrim runs in one container. The container serves the app, runs the queue worker and the scheduler, and keeps all the data in one volume at `/data`. The default database is SQLite. You need no `.env` file.
 
-| Service | Image | What it does |
-|---|---|---|
-| `web` | `feedbackpilgrim:local` (built from the `Dockerfile`) | PHP-FPM and NGINX. Serves the app on port 8080. Runs the migrations at start. |
-| `queue` | `feedbackpilgrim:local` | Runs `php artisan queue:work --tries=3`. |
-| `scheduler` | `feedbackpilgrim:local` | Runs `php artisan schedule:work`. |
-| `mysql` | `mysql:8.4` | The database. |
-| `redis` | `redis:7.4-alpine` | The cache, the sessions, the queue and the last-login times. |
+## Try it on your computer
 
-The app image is based on `serversideup/php:8.3-fpm-nginx-v5.1.2`. The build adds the PHP extensions `gd` and `exif`. It also builds the dashboard assets and `public/pilgrim.js` with Node.js 24.
+```bash
+docker run -d --name feedbackpilgrim -p 8080:8080 -v feedbackpilgrim:/data ghcr.io/amedina068/feedbackpilgrim
+docker logs -f feedbackpilgrim
+```
 
-Each release also publishes a prebuilt image to the GitHub Container Registry, for `linux/amd64` and `linux/arm64`. The file `docker-compose.image.yml` is the same stack, but it uses this image and does not build:
+The last line of the log is the setup URL, for example `http://localhost:8080/setup?token=...`. Open it, then create the owner account and the first project.
 
-1. Put `docker-compose.image.yml` and `.env.example` in an empty folder.
-2. Do steps 2 to 5 of the installation below.
-3. Start the stack:
+The public site of a project is at `http://<subdomain>.localhost:8080`. Browsers send `*.localhost` to your own computer, so you need no DNS record.
+
+## Install on a server
+
+You need:
+
+- A Linux server with Docker, on amd64 or arm64. 1 GB of memory is enough.
+- Ports 80 and 443 open to the internet.
+- A domain for the dashboard, for example `feedback.example.com`.
+
+1. Add two DNS A records that point to the IP address of the server:
+
+   | Name | What it serves |
+   |---|---|
+   | `feedback.example.com` | The dashboard, the REST API, the MCP server and `pilgrim.js` |
+   | `*.feedback.example.com` | The public site of each project |
+
+2. Run the installer on the server:
 
    ```bash
-   docker compose -f docker-compose.image.yml up -d
+   curl -fsSL https://raw.githubusercontent.com/amedina068/feedbackpilgrim/main/install.sh | bash
    ```
 
-4. Do steps 7 to 9 of the installation below. Add `-f docker-compose.image.yml` to each `docker compose` command.
+3. Type the domain when the installer asks for it.
+4. Open the setup URL that the installer shows.
+5. Create the owner account and the first project. Then the app signs you in.
 
-`FEEDBACKPILGRIM_IMAGE` selects the image. The default in `docker-compose.image.yml` is `ghcr.io/amedina068/feedbackpilgrim`. Set `FEEDBACKPILGRIM_IMAGE` in `.env` only to run an image from another registry or a fork. Use lowercase, because a Docker image name must be lowercase.
+The installer checks Docker, the CPU architecture and the ports. It starts the container, waits until the app answers, and shows the setup URL. It writes a log to `/tmp/feedbackpilgrim-install.log`.
 
-`FEEDBACKPILGRIM_VERSION` selects the image tag. The default is `latest`. To stay on one version, set an exact version, for example `FEEDBACKPILGRIM_VERSION=0.1.0`.
+| Option | What it does |
+|---|---|
+| `--domain=<host>` | Uses this domain. The installer does not ask. |
+| `--non-interactive` | Asks nothing. The installer reads the domain from `APP_DOMAIN`. |
+| `--dry-run` | Prints each docker command. The installer changes nothing. |
 
-## Requirements
+To pass an option through `curl`, use `bash -s --`, for example `curl -fsSL <url> | bash -s -- --dry-run`.
 
-- Docker with the Compose plugin.
-- `git` and `openssl`.
-- A domain for the dashboard, for example `feedback.example.com`.
-- Two DNS records that point to your server: the dashboard domain and a wildcard for the projects, for example `*.feedback.example.com`.
-- A TLS certificate for both names. Read [Reverse proxy and TLS](../self-hosting/reverse-proxy-and-tls.md).
+## Start the container without the installer
 
-## Install
+```bash
+docker run -d --name feedbackpilgrim --restart unless-stopped \
+  -p 80:80 -p 443:443 -p 443:443/udp \
+  -e APP_DOMAIN=feedback.example.com \
+  -v feedbackpilgrim:/data \
+  ghcr.io/amedina068/feedbackpilgrim
+```
+
+When `APP_DOMAIN` is set, the container serves ports 80 and 443 with automatic HTTPS. Read [Reverse proxy and TLS](../self-hosting/reverse-proxy-and-tls.md).
+
+The image tag `latest` is the latest release. To stay on one version, use a version tag, for example `ghcr.io/amedina068/feedbackpilgrim:0.1.0`.
+
+## The setup URL
+
+The setup page at `/setup` creates the owner account and the first project. It is open only while the instance has no user.
+
+The setup URL holds a token. The app makes the token from `APP_KEY` with HMAC-SHA256, so the instance stores no token. If you open `/setup` without the correct token, the page shows no form. It shows the commands that print the setup URL, and a field for the token.
+
+If you lose the setup URL, show it again:
+
+```bash
+docker exec feedbackpilgrim php artisan fp:setup-url
+```
+
+After the first user exists, `/setup` sends you to the login page.
+
+## Create the owner from the command line
+
+An agent or a script can create the owner without the setup page:
+
+```bash
+docker exec feedbackpilgrim php artisan fp:install \
+  --name="Ada Lovelace" --email=ada@example.com \
+  --project="Acme" --subdomain=acme \
+  --json --no-interaction
+```
+
+The command returns a one-time `login_url`. With `--with-token=<name>`, it also makes an API token and returns the commands that connect an AI agent. A second run makes no change and returns `"status":"exists"`. Read [Accounts and registration](../self-hosting/accounts-and-registration.md).
+
+## What the container does at start
+
+1. On the first start, it makes `APP_KEY` and the other secrets. It writes them to a file in `/data` with mode 600. On each later start, it reads the same file.
+2. It runs the migrations.
+3. It starts the web server, the queue worker and the scheduler.
+4. If no account exists, it prints the setup URL as the last line of the log. If an owner exists, it prints the app URL.
+
+The Docker health check calls `/up`.
+
+## The `/data` volume
+
+The volume holds all the data of the instance:
+
+- the SQLite database
+- the generated secrets, with `APP_KEY`
+- the uploads: post attachments, comment photos, avatars and logos
+- the TLS certificates
+
+WARNING: Back up the `/data` volume. If you lose it, you lose `APP_KEY`, and a restored database cannot decrypt the identity secrets of the projects. Read [Backups](../self-hosting/backups.md).
+
+## Environment variables
+
+On localhost, the container needs no variable. On a server, `APP_DOMAIN` is the only required variable. The app derives `APP_URL`, `SESSION_DOMAIN`, `SANCTUM_STATEFUL_DOMAINS` and `SESSION_SECURE_COOKIE` from it.
+
+To set more values, add `-e NAME=value` to `docker run`, or use `--env-file`. Read [Configuration](configuration.md) for all the variables, and [Mail](../self-hosting/mail.md) for the mail server.
+
+## MySQL and Redis
+
+The repository has a `docker-compose.yml` for MySQL 8.4 and Redis 7.4. Use it if you already run MySQL, or if you want the database in a separate container.
 
 1. Clone the repository and go into its folder:
 
@@ -57,122 +138,28 @@ Each release also publishes a prebuilt image to the GitHub Container Registry, f
    cp .env.example .env
    ```
 
-3. Make the app key and the database password:
-
-   ```bash
-   echo "APP_KEY=base64:$(openssl rand -base64 32)"
-   echo "DB_PASSWORD=$(openssl rand -hex 16)"
-   ```
-
-4. Put the two values in `.env`.
-5. Set these values in `.env`:
-
-   | Variable | Value |
-   |---|---|
-   | `APP_DOMAIN` | Your dashboard domain, for example `feedback.example.com` |
-   | `APP_URL` | `https://feedback.example.com` |
-   | `SESSION_DOMAIN` | `.feedback.example.com` (with the leading dot) |
-   | `SANCTUM_STATEFUL_DOMAINS` | `feedback.example.com,*.feedback.example.com` |
-   | `LOG_STACK` | `stderr`, so that `docker compose logs` shows the log of the app |
-   | `MAIL_*` | Your SMTP server. Read [Mail](../self-hosting/mail.md). |
-
-6. Build and start the stack:
+3. In `.env`, set `APP_DOMAIN` and `DB_PASSWORD`.
+4. In `.env`, remove the `#` from the lines of the "MySQL and Redis" block. The block sets `COMPOSE_PROFILES=mysql`, so Compose also starts the `mysql` and `redis` services.
+5. Build and start the stack:
 
    ```bash
    docker compose up -d --build
    ```
 
-7. Wait until all the services are healthy:
+6. Read the setup URL on the last line of the log:
 
    ```bash
-   docker compose ps
+   docker compose logs -f web
    ```
 
-8. Read the setup URL in the log of the `web` service:
+Without step 4, the same Compose file runs the `web` service with SQLite. The `web` service runs the app, the queue worker and the scheduler. A fresh MySQL install loads a schema dump, so the first start is fast. The `web` service waits for MySQL before it runs the migrations.
 
-   ```bash
-   docker compose logs web
-   ```
-
-9. Open the setup URL.
-10. Type the name, the email and the password of the owner.
-11. Type the name and the subdomain of the first project. Then the app signs you in.
-
-If `DB_PASSWORD` is empty, `docker compose` stops with the error `Set DB_PASSWORD in .env`.
-
-Read [Configuration](configuration.md) for all the environment variables.
-
-## The setup URL
-
-The setup page at `/setup` creates the owner account and the first project. It is open only while the instance has no user. After the first user exists, `/setup` returns 404. The page allows 10 requests a minute.
-
-The setup URL holds a token. The app makes the token from `APP_KEY` with HMAC-SHA256, so the instance stores no token. If `APP_KEY` changes, the token changes.
-
-If you lose the setup URL, show it again:
-
-```bash
-docker compose exec web php artisan fp:setup-url
-```
-
-To create the owner in the terminal instead of the setup page, run this command. It asks for each value:
-
-```bash
-docker compose exec web php artisan fp:install
-```
-
-You can also give the values as options: `--name`, `--email`, `--password`, `--client-name` and `--subdomain`. Read [Accounts and registration](../self-hosting/accounts-and-registration.md) for the details.
-
-## The subdomain of a project
-
-The subdomain is the slug of the project. It must use lowercase letters, digits and single hyphens, for example `acme` or `acme-app`. It must be unique on the instance.
-
-These subdomains are reserved: `admin`, `api`, `app`, `assets`, `blog`, `cdn`, `dashboard`, `dev`, `docs`, `help`, `mail`, `mcp`, `smtp`, `staging`, `static`, `status`, `support` and `www`.
-
-## What the `web` service does at start
-
-1. The serversideup entrypoint runs the Laravel automations, because Compose sets `AUTORUN_ENABLED=true` for `web` only. These run `storage:link`, the migrations and `optimize`.
-2. The script `deploy/docker/entrypoint.d/60-feedbackpilgrim-setup.sh` runs `php artisan fp:install --prepare`. This command creates the storage link if it is missing.
-3. While no account exists, the script prints the setup URL to the log.
-
-Only `web` sets `FP_PREPARE_ON_START=true`, so only `web` does steps 2 and 3. The `queue` and `scheduler` services start after `web` is healthy.
-
-## Settings that Compose sets
-
-`docker-compose.yml` sets these values for the app services. Do not set them in `.env`, because the Compose values win:
-
-| Variable | Value |
-|---|---|
-| `DB_CONNECTION` | `mysql` |
-| `DB_HOST` | `mysql` |
-| `DB_PORT` | `3306` |
-| `REDIS_HOST` | `redis` |
-| `REDIS_PORT` | `6379` |
-
-The `mysql` service reads `DB_DATABASE`, `DB_USERNAME` and `DB_PASSWORD` from `.env`. The default database name and user are both `feedbackpilgrim`. The root password of MySQL is random.
-
-## Volumes
-
-| Volume | Mounted at | Content |
-|---|---|---|
-| `storage` | `/var/www/html/storage/app` | The uploads: post attachments, comment photos, avatars and logos. |
-| `mysql` | `/var/lib/mysql` | The database files. |
-| `redis` | `/data` | The Redis data. Redis runs with `--appendonly yes`. |
-
-The log files of the app are not on a volume. Set `LOG_STACK=stderr` and read the log with `docker compose logs`.
-
-Make a backup of the volumes and of `.env`. Read [Backups](../self-hosting/backups.md).
-
-## Ports and health checks
-
-The `web` service answers on port 8080 of the loopback interface (`127.0.0.1`) of the host. Thus only a proxy on the same host can reach it. To change the port, set `APP_PORT` in `.env`. To accept traffic from other hosts, set `APP_BIND=0.0.0.0`.
-
-The stack does not serve HTTPS. Put a reverse proxy with TLS in front of it. Read [Reverse proxy and TLS](../self-hosting/reverse-proxy-and-tls.md).
-
-The image sets `HEALTHCHECK_PATH=/up`. The `/up` route answers on any host. The `queue` and `scheduler` services use the health checks `healthcheck-queue` and `healthcheck-schedule` of the base image.
+The Compose file publishes port 8080 on `127.0.0.1` and expects your own proxy with TLS. To let the container get its own certificates, set `CADDY_ENABLED=true` and publish ports 80 and 443. To use the published image instead of a local build, use `docker compose -f docker-compose.image.yml`.
 
 ## Next steps
 
 - [Configuration](configuration.md)
 - [Reverse proxy and TLS](../self-hosting/reverse-proxy-and-tls.md)
-- [Projects and the public site](../using-feedback-pilgrim/projects-and-public-site.md)
+- [Backups](../self-hosting/backups.md)
 - [Upgrading](upgrading.md)
+- [Connect an AI agent](../mcp/connecting-clients.md)

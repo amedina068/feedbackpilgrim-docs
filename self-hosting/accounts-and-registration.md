@@ -43,6 +43,8 @@ The command stops with an error if the instance has a user already: `This instan
 
 At the end, the command shows the URL of the dashboard and of the public site.
 
+For a script or an AI agent, add `--json --no-interaction`. With `--json`, the command prints one JSON object with a one-time `login_url`. With `--with-token=<name>`, it also makes an API token and returns the `claude mcp add` and `codex mcp add` commands. In this mode, a second run makes no change, returns `"status":"exists"` and exits with code 0. Read the `INSTALL.md` file of the app repository for the full agent procedure.
+
 The command also has two other modes:
 
 | Option | What it does |
@@ -59,7 +61,7 @@ php artisan fp:install --promote=person@example.com
 With Docker:
 
 ```bash
-docker compose exec web php artisan fp:install --promote=person@example.com
+docker exec feedbackpilgrim php artisan fp:install --promote=person@example.com
 ```
 
 ## Registration modes

@@ -15,6 +15,14 @@ Before you start:
 
 After you change the configuration of a client, restart the client.
 
+On the server, `fp:mcp:connect` prints the configuration for each client with a new or an existing token:
+
+```bash
+docker exec feedbackpilgrim php artisan fp:mcp:connect --client=claude --token=new
+```
+
+`--client` accepts `claude`, `codex`, `cursor` and `json`.
+
 ## Claude Code
 
 Run this command in your terminal:
