@@ -1,7 +1,7 @@
 ---
 title: Release notes
 description: The changes to Feedback Pilgrim that users can see, newest first.
-order: 6
+order: 7
 ---
 
 # Release notes

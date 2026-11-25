@@ -12,11 +12,19 @@ The MCP server and the REST API use the same code and the same validation. Read 
 
 ## The endpoint
 
+On Feedback Pilgrim Cloud, the endpoint is:
+
+```text
+https://app.feedbackpilgrim.com/mcp
+```
+
+On a self-hosted instance, the endpoint is on the dashboard host, that is the host of `APP_URL`:
+
 ```text
 https://feedback.example.com/mcp
 ```
 
-The endpoint is on the dashboard host, that is the host of `APP_URL`. The **Settings > API Tokens** page of the dashboard shows the URL.
+The **Settings > API Tokens** page of the dashboard shows the URL.
 
 | Property | Value |
 |---|---|

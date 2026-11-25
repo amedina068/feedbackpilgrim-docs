@@ -11,7 +11,9 @@ The **Settings > API Tokens** page of the dashboard shows a snippet for each cli
 Before you start:
 
 1. Make an API token for the project. Read [Authentication](../api/authentication.md).
-2. Copy the server URL from **Settings > API Tokens**, for example `https://feedback.example.com/mcp`.
+2. Copy the server URL from **Settings > API Tokens**. On Feedback Pilgrim Cloud, the URL is `https://app.feedbackpilgrim.com/mcp`. On a self-hosted instance, it is the `APP_URL` of the instance with `/mcp`, for example `https://feedback.example.com/mcp`.
+
+The examples on this page use the Cloud URL. On a self-hosted instance, replace it with the server URL of your instance.
 
 After you change the configuration of a client, restart the client.
 
@@ -20,7 +22,7 @@ After you change the configuration of a client, restart the client.
 Run this command in your terminal:
 
 ```bash
-claude mcp add --transport http feedback-pilgrim https://feedback.example.com/mcp \
+claude mcp add --transport http feedback-pilgrim https://app.feedbackpilgrim.com/mcp \
   --header "Authorization: Bearer <your-token>"
 ```
 
@@ -33,7 +35,7 @@ Add the server to `claude_desktop_config.json`:
   "mcpServers": {
     "feedback-pilgrim": {
       "type": "http",
-      "url": "https://feedback.example.com/mcp",
+      "url": "https://app.feedbackpilgrim.com/mcp",
       "headers": {
         "Authorization": "Bearer <your-token>"
       }
@@ -49,7 +51,7 @@ Codex connects through `mcp-remote`. Add the server to `~/.codex/config.toml`:
 ```toml
 [mcp_servers.feedback-pilgrim]
 command = "npx"
-args = ["-y", "mcp-remote", "https://feedback.example.com/mcp", "--header", "Authorization: Bearer <your-token>"]
+args = ["-y", "mcp-remote", "https://app.feedbackpilgrim.com/mcp", "--header", "Authorization: Bearer <your-token>"]
 ```
 
 ## Cursor and other clients
@@ -60,7 +62,7 @@ Add the server to the `mcp.json` file of the client, for example `.cursor/mcp.js
 {
   "mcpServers": {
     "feedback-pilgrim": {
-      "url": "https://feedback.example.com/mcp",
+      "url": "https://app.feedbackpilgrim.com/mcp",
       "headers": {
         "Authorization": "Bearer <your-token>"
       }
@@ -80,7 +82,7 @@ Ask the agent to list the tags of the project. The agent calls `list_tags`. If t
 - If the client gets `401`, make sure that the token is complete, with the part before the `|`.
 - If the client gets `401` with a correct token, make sure that the user of the token is active. The user must also be a member of the project.
 - If the client gets `429`, the client sent more than 60 requests in a minute.
-- If the client cannot reach the server, open `https://feedback.example.com/up` in a browser. The page must load.
+- If the client cannot reach the server, open `https://app.feedbackpilgrim.com/up` in a browser. On a self-hosted instance, open `https://feedback.example.com/up`. The page must load.
 
 ## More than one project
 

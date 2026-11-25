@@ -38,7 +38,7 @@ Each operation of the spec names the key that it needs:
 | `apiToken` | An API token. Read [Authentication](authentication.md). | All operations of `/api/public/v1` |
 | `publishableKey` | The publishable key of the project. Read [Widget init](widget.md). | `POST /api/v1/init` only |
 
-The server URL of the spec is the `{baseUrl}` variable. Set it to the URL of your instance, for example `https://feedback.example.com`. The paths of the spec start with `/api/`.
+The server URL of the spec is the `{baseUrl}` variable. Set it to `https://app.feedbackpilgrim.com` on Feedback Pilgrim Cloud. On a self-hosted instance, set it to the URL of your instance, for example `https://feedback.example.com`. The paths of the spec start with `/api/`.
 
 ## The variables
 
@@ -46,7 +46,7 @@ The collection and the environment use these variables:
 
 | Variable | Set it to |
 |---|---|
-| `baseUrl` | The URL of your instance, with no slash at the end, for example `https://feedback.example.com`. |
+| `baseUrl` | The URL of your instance, with no slash at the end. On Cloud, use `https://app.feedbackpilgrim.com`. On a self-hosted instance, use your `APP_URL`, for example `https://feedback.example.com`. |
 | `token` | Your API token. All requests send it, except the widget init request. |
 | `publishableKey` | The publishable key of the project. Only the widget init request sends it. |
 

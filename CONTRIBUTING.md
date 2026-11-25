@@ -79,8 +79,8 @@ Start a warning with `WARNING:` (a risk to data or security) or `CAUTION:` (a ri
 ## Voice
 
 - Write for a person who runs or uses an instance. Use a neutral open-source voice.
-- Do not write sales copy, prices or "sign up" text.
-- Use the example hosts `feedback.example.com` and `acme.feedback.example.com`.
+- Do not write sales copy, prices or "sign up" text. The exception is `getting-started/cloud.md`. That page gives the plans, the prices and the sign-up steps of Feedback Pilgrim Cloud. The maintainer gives these facts, because the app code has no billing code. Other pages link to that page.
+- Use the example hosts `feedback.example.com` and `acme.feedback.example.com`. For Feedback Pilgrim Cloud, use the real hosts `app.feedbackpilgrim.com` and `<subdomain>.app.feedbackpilgrim.com`.
 - Use placeholders like `<your-token>` for secrets.
 - Never put a real token, key, password or personal email on a page.
 

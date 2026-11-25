@@ -1,7 +1,7 @@
 ---
 title: Upgrading
 description: Update an instance to a new version of the code, and the steps for instances made with older code.
-order: 5
+order: 6
 ---
 
 # Upgrading

@@ -6,6 +6,8 @@ order: 5
 
 # Accounts and registration
 
+Do not want to run a server? Use [Feedback Pilgrim Cloud](../getting-started/cloud.md).
+
 ## The owner
 
 An owner runs the instance. Only an owner sees the **Admin** link and can open `/admin`. Other users get 404 there. Read [The admin area](../using-feedback-pilgrim/admin-area.md).

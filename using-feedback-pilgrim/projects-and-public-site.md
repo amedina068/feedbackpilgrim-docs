@@ -51,7 +51,7 @@ The subdomain of a project cannot change after creation. No form or route change
 
 ## The public site
 
-The public site of a project is at `https://<subdomain>.<APP_DOMAIN>`, for example `https://acme.feedback.example.com`. The app finds the project from the host name.
+The public site of a project is at `https://<subdomain>.<APP_DOMAIN>`, for example `https://acme.feedback.example.com`. On Feedback Pilgrim Cloud, it is at `https://<subdomain>.app.feedbackpilgrim.com`. The app finds the project from the host name.
 
 | Path | What it shows |
 |---|---|

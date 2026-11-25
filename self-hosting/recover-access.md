@@ -6,6 +6,8 @@ order: 6
 
 # Recover access
 
+Do not want to run a server? Use [Feedback Pilgrim Cloud](../getting-started/cloud.md).
+
 The "forgot password" form sends an email. If the instance has no mail, or if a user cannot read the email, use the commands on this page.
 
 With Docker, put `docker compose exec web` before each command, for example `docker compose exec web php artisan fp:user:list`.

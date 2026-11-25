@@ -33,7 +33,8 @@ Each SDK uses the MIT license. The `LICENSE` file is in each repository, and the
 
 ### The client
 
-- The client takes the URL of your instance (its `APP_URL`) and an API token. Each user runs an own instance, so the URL has no default. Read [Make a token](../api/authentication.md#make-a-token).
+- The client takes the URL of your instance (its `APP_URL`) and an API token. The URL has no default. Read [Make a token](../api/authentication.md#make-a-token).
+- On Feedback Pilgrim Cloud, the URL is `https://app.feedbackpilgrim.com`. On a self-hosted instance, the URL is your `APP_URL`, for example `https://feedback.example.com`. The quick starts below show both.
 - The client sends the token as `Authorization: Bearer <token>`.
 - The client sends `Accept: application/json` with each request. Without this header, Laravel sends an error as a redirect to `/login` or as an HTML page.
 - The token belongs to one project. It has all abilities and does not expire. Keep the token on your server.
@@ -213,7 +214,8 @@ The package has no runtime dependencies. It uses the global `fetch` and Web Cryp
 import { FeedbackPilgrim } from "feedbackpilgrim";
 
 const pilgrim = new FeedbackPilgrim({
-	baseUrl: "https://feedback.example.com",
+	// Feedback Pilgrim Cloud. On a self-hosted instance, use your APP_URL, for example "https://feedback.example.com".
+	baseUrl: "https://app.feedbackpilgrim.com",
 	token: process.env.FEEDBACKPILGRIM_TOKEN,
 });
 
@@ -413,7 +415,8 @@ The SDK uses PSR-18 and PSR-17 with `php-http/discovery`. It works with any PSR-
 use FeedbackPilgrim\FeedbackPilgrim;
 
 $pilgrim = new FeedbackPilgrim(
-    url: 'https://feedback.example.com',
+    // Feedback Pilgrim Cloud. On a self-hosted instance, use your APP_URL, for example 'https://feedback.example.com'.
+    url: 'https://app.feedbackpilgrim.com',
     token: getenv('FEEDBACKPILGRIM_TOKEN'),
 );
 
@@ -590,7 +593,8 @@ The package has no dependencies. It uses only the standard library. It has full 
 ```python
 from feedbackpilgrim import FeedbackPilgrim
 
-client = FeedbackPilgrim("https://feedback.example.com", token="<your-api-token>")
+# Feedback Pilgrim Cloud. On a self-hosted instance, use your APP_URL, for example "https://feedback.example.com".
+client = FeedbackPilgrim("https://app.feedbackpilgrim.com", token="<your-api-token>")
 
 page = client.posts.list(status="pending", per_page=20)
 for post in page:
@@ -757,7 +761,8 @@ The gem uses only the Ruby standard library. It has no runtime dependencies.
 require "feedbackpilgrim"
 
 FeedbackPilgrim.configure do |config|
-  config.url   = "https://feedback.example.com"
+  # Feedback Pilgrim Cloud. On a self-hosted instance, use your APP_URL, for example "https://feedback.example.com".
+  config.url   = "https://app.feedbackpilgrim.com"
   config.token = ENV["FEEDBACKPILGRIM_TOKEN"]
 end
 

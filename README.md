@@ -1,6 +1,8 @@
 # Feedback Pilgrim documentation
 
-This repository holds the documentation of Feedback Pilgrim, a self-hosted feedback board. Customers post feature requests, vote and comment on a public site for each project. The team sorts the requests by the revenue of the customers who ask for them.
+This repository holds the documentation of Feedback Pilgrim, a feedback board. Customers post feature requests, vote and comment on a public site for each project. The team sorts the requests by the revenue of the customers who ask for them.
+
+Feedback Pilgrim has two editions. [Feedback Pilgrim Cloud](getting-started/cloud.md) is the hosted edition at `https://app.feedbackpilgrim.com`. The self-hosted edition is free under the AGPL-3.0 license.
 
 Each Markdown file is one page. The folder of a file is the section of the page.
 
@@ -13,6 +15,7 @@ The code of the app is in a separate repository, [amedina068/feedbackpilgrim](ht
 ### Getting started
 
 - [Introduction](getting-started/introduction.md)
+- [Feedback Pilgrim Cloud](getting-started/cloud.md)
 - [Install with Docker](getting-started/installation-docker.md)
 - [Install without Docker](getting-started/installation-manual.md)
 - [Configuration](getting-started/configuration.md)
