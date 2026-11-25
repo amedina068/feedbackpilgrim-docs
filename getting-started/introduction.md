@@ -1,6 +1,6 @@
 ---
 title: Introduction
-description: What Feedback Pilgrim is, what it does, and how the parts fit together.
+description: What Feedback Pilgrim is, its features, its parts and stack, the two kinds of accounts, the words of these docs, and the license.
 order: 1
 ---
 
