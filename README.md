@@ -148,3 +148,9 @@ A paragraph that starts with `TODO(owner):` is a question for the maintainer. Th
 ```bash
 grep -rn "TODO(owner):" --include=*.md .
 ```
+
+## License
+
+The pages of this repository are available under the [Creative Commons Attribution 4.0 International License](LICENSE) (CC BY 4.0). You can copy and change the pages if you give credit to Feedback Pilgrim and link to the source.
+
+The code examples in the pages and the files in `scripts/` are available under the [MIT License](LICENSE-CODE). You can use the examples in your own code, open source or closed source.
