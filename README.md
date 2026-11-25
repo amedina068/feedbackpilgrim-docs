@@ -135,7 +135,7 @@ The script then makes sure that:
 
 If the app checkout has a `vendor/` folder, the script reads the command list from `php artisan list`. If not, it reads the command signatures in `app/Console/Commands` and a fixed list of framework commands.
 
-The CI runs the same script on each push and pull request. If the repository has the secret `FEEDBACKPILGRIM_APP_TOKEN`, the CI clones the app and runs all the checks. Without the secret, it runs the link check only.
+The CI runs the same script on each push and pull request. The CI clones the public app repository `amedina068/feedbackpilgrim` and runs all the checks.
 
 ## The MCP tools reference
 
