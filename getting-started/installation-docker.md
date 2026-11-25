@@ -93,7 +93,7 @@ docker exec feedbackpilgrim php artisan fp:install \
   --json --no-interaction
 ```
 
-The command returns a one-time `login_url`. With `--with-token=<name>`, it also makes an API token and returns the commands that connect an AI agent. A second run makes no change and returns `"status":"exists"`. Read [Accounts and registration](../self-hosting/accounts-and-registration.md).
+The command returns a `login_url` that works one time, for 60 minutes. With `--with-token=<name>`, it also makes an API token and returns the commands that connect an AI agent. A second run with the same email makes no change and returns `"status":"exists"`. Read [Accounts and registration](../self-hosting/accounts-and-registration.md).
 
 ## What the container does at start
 
