@@ -6,6 +6,8 @@ order: 7
 
 # Troubleshooting
 
+Do not want to run a server? Use [Feedback Pilgrim Cloud](../getting-started/cloud.md).
+
 ## Read the log
 
 With Docker, set `LOG_STACK=stderr` in `.env`, then read the log of a service:

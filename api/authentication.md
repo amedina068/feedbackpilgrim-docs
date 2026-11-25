@@ -21,7 +21,15 @@ The token has the form `<id>|<random characters>`. Send the full value.
 
 ## Send the token
 
-Send the token in the `Authorization` header:
+Send the token in the `Authorization` header. On Feedback Pilgrim Cloud:
+
+```bash
+curl https://app.feedbackpilgrim.com/api/public/v1/tags \
+  -H 'Authorization: Bearer <your-token>' \
+  -H 'Accept: application/json'
+```
+
+On a self-hosted instance, use the host of your `APP_URL`:
 
 ```bash
 curl https://feedback.example.com/api/public/v1/tags \
@@ -29,7 +37,7 @@ curl https://feedback.example.com/api/public/v1/tags \
   -H 'Accept: application/json'
 ```
 
-In PHP with the Laravel HTTP client:
+In PHP with the Laravel HTTP client, on a self-hosted instance. On Cloud, use `https://app.feedbackpilgrim.com/api/public/v1` as the base URL.
 
 ```php
 use Illuminate\Support\Facades\Http;

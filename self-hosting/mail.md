@@ -6,6 +6,8 @@ order: 4
 
 # Mail
 
+Do not want to run a server? Use [Feedback Pilgrim Cloud](../getting-started/cloud.md).
+
 Feedback Pilgrim sends emails to users and contacts: password resets, notifications, weekly reports and testimonial requests. Read [Notifications and weekly reports](../using-feedback-pilgrim/notifications-and-weekly-reports.md) for the list.
 
 Most emails go through the queue. Thus the queue worker must run. Read [Queues and the scheduler](queues-and-scheduler.md).

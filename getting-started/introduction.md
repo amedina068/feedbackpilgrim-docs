@@ -6,7 +6,18 @@ order: 1
 
 # Introduction
 
-Feedback Pilgrim is a self-hosted feedback board. Your customers post feature requests, vote and comment on a public site for each of your products. You sort the requests by the revenue of the customers who ask for them.
+Feedback Pilgrim is a feedback board. Your customers post feature requests, vote and comment on a public site for each of your products. You sort the requests by the revenue of the customers who ask for them.
+
+## Two editions
+
+Feedback Pilgrim has two editions:
+
+- **Feedback Pilgrim Cloud.** The Feedback Pilgrim team runs the instance at `https://app.feedbackpilgrim.com`. You sign up, create a project and start. You do not need a server. Cloud is the fastest start. Read [Feedback Pilgrim Cloud](cloud.md).
+- **Self-host.** You install Feedback Pilgrim on your own server. The self-hosted edition is free under the AGPL-3.0 license, with no limits. Read [Install with Docker](installation-docker.md).
+
+The pages about the product, the REST API, the SDKs and the MCP server apply to both editions. The install pages, the configuration page, the upgrade page and the "Self-hosting" section apply to a self-hosted instance only.
+
+## Projects and instances
 
 One instance can hold many projects. Each project has its own public site on a subdomain, for example `acme.feedback.example.com`. The team works in the dashboard on the main domain, for example `feedback.example.com`.
 
@@ -21,7 +32,7 @@ One instance can hold many projects. Each project has its own public site on a s
 - **Collect testimonials.** Contacts write testimonials with an optional rating. A testimonial shows on the public site after approval.
 - **Embed the widget.** The `pilgrim.js` script signs in the users of your app on the public site, without a second login.
 - **Automate.** Use the REST API, the MCP server for AI agents, signed webhooks and Slack messages.
-- **Run the instance.** The owner manages the users and the registration mode in the admin area.
+- **Run the instance.** On a self-hosted instance, the owner manages the users and the registration mode in the admin area.
 
 ## How it works
 
@@ -73,6 +84,7 @@ The SDKs are under the MIT license.
 
 ## Next steps
 
+- To start without a server, read [Feedback Pilgrim Cloud](cloud.md).
 - To install with Docker, read [Install with Docker](installation-docker.md).
 - To install on a server without Docker, read [Install without Docker](installation-manual.md).
 - To set the environment variables, read [Configuration](configuration.md).

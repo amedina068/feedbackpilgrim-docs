@@ -1,10 +1,12 @@
 ---
 title: Install with Docker
 description: Run Feedback Pilgrim with Docker Compose, create the owner account and open the dashboard.
-order: 2
+order: 3
 ---
 
 # Install with Docker
+
+Do not want to run a server? Use [Feedback Pilgrim Cloud](cloud.md).
 
 The repository has a `Dockerfile` and a `docker-compose.yml`. The Compose stack has five services:
 

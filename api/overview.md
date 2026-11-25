@@ -14,11 +14,19 @@ The MCP server uses the same code and the same validation. Read [MCP server](../
 
 ## Base URL
 
+On Feedback Pilgrim Cloud, the base URL is:
+
+```text
+https://app.feedbackpilgrim.com/api/public/v1
+```
+
+On a self-hosted instance, use the dashboard host of your instance, that is the host of `APP_URL`:
+
 ```text
 https://feedback.example.com/api/public/v1
 ```
 
-Use the dashboard host of your instance, that is the host of `APP_URL`.
+The examples in these docs use the self-hosted form. On Cloud, replace `https://feedback.example.com` with `https://app.feedbackpilgrim.com`. Read [Feedback Pilgrim Cloud](../getting-started/cloud.md).
 
 ## Keys
 

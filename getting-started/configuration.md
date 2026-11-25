@@ -1,7 +1,7 @@
 ---
 title: Configuration
 description: The environment variables of Feedback Pilgrim, and how the dashboard domain and the project subdomains work.
-order: 4
+order: 5
 ---
 
 # Configuration

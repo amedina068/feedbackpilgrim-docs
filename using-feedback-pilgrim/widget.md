@@ -30,7 +30,13 @@ The app stores the identity secret encrypted with `APP_KEY`. To make a new secre
 
 ## Add the widget
 
-1. Add the script to the pages of your app. Use the `pilgrim.js` of your instance:
+1. Add the script to the pages of your app. On Feedback Pilgrim Cloud, use this script:
+
+   ```html
+   <script src="https://app.feedbackpilgrim.com/pilgrim.js" data-client="pk_your_publishable_key"></script>
+   ```
+
+   On a self-hosted instance, use the `pilgrim.js` of your instance:
 
    ```html
    <script src="https://feedback.example.com/pilgrim.js" data-client="pk_your_publishable_key"></script>

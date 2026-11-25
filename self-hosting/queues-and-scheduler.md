@@ -6,6 +6,8 @@ order: 3
 
 # Queues and the scheduler
 
+Do not want to run a server? Use [Feedback Pilgrim Cloud](../getting-started/cloud.md).
+
 Feedback Pilgrim needs two processes in addition to the web server:
 
 | Process | Command | Docker service |

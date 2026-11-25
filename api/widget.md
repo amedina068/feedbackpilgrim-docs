@@ -57,6 +57,8 @@ POST /api/v1/init
 
 ## Example request
 
+On Feedback Pilgrim Cloud, the endpoint is `https://app.feedbackpilgrim.com/api/v1/init`. This example uses a self-hosted instance:
+
 ```bash
 curl -X POST https://feedback.example.com/api/v1/init \
   -H 'Authorization: Bearer pk_<publishable-key>' \

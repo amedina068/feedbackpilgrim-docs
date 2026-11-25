@@ -6,6 +6,8 @@ order: 1
 
 # Reverse proxy and TLS
 
+Do not want to run a server? Use [Feedback Pilgrim Cloud](../getting-started/cloud.md).
+
 The `web` service of the Docker stack serves plain HTTP on port `APP_PORT` (8080 by default). It does not serve HTTPS. Put a reverse proxy with TLS in front of it, for example Caddy, Traefik or NGINX.
 
 ## DNS

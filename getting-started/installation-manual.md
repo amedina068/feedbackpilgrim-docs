@@ -1,10 +1,12 @@
 ---
 title: Install without Docker
 description: Install Feedback Pilgrim on a server with PHP, MySQL and Redis, without Docker.
-order: 3
+order: 4
 ---
 
 # Install without Docker
+
+Do not want to run a server? Use [Feedback Pilgrim Cloud](cloud.md).
 
 This page installs Feedback Pilgrim on a Linux server with PHP, a web server, MySQL and Redis. The Docker files of the repository show the same steps. Read [Install with Docker](installation-docker.md) for the Docker way.
 

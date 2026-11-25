@@ -6,6 +6,8 @@ order: 2
 
 # Backups
 
+Do not want to run a server? Use [Feedback Pilgrim Cloud](../getting-started/cloud.md).
+
 Feedback Pilgrim does not make backups by itself. Make them with the tools of your server.
 
 Back up the database and the uploads each day. Keep the daily backups for 14 days. Also make a backup before each upgrade. Copy the backups to storage outside the server. Restore a backup to a test server one time each month, to make sure that the backups work.
