@@ -15,13 +15,32 @@ Before you start:
 
 After you change the configuration of a client, restart the client.
 
-## Claude Code
-
-Run this command in your terminal:
+On the server, `fp:mcp:connect` prints the configuration for each client. With `--token=new`, it also makes a token with the abilities `mcp:read` and `mcp:write`:
 
 ```bash
+docker exec feedbackpilgrim php artisan fp:mcp:connect --client=claude --token=new
+```
+
+`--client` accepts `claude`, `codex`, `cursor` and `json`. The printed lines read the token from the `FP_TOKEN` environment variable, so the token is not in your shell history.
+
+## The instance-admin server
+
+A second MCP server operates the instance: status, doctor, users, projects, API tokens, the queue and a test email. It uses stdio over SSH and `docker exec`. It needs no token and no open port:
+
+```bash
+claude mcp add fp-admin -- ssh <host> docker exec -i feedbackpilgrim php artisan mcp:start fp-admin
+```
+
+A destructive tool returns a preview first, and changes data only after a second call with `confirm: true`. The server writes each call to the `mcp-admin` log. An HTTP route at `/mcp/admin` exists only when `MCP_ADMIN_ENABLED=true`. It accepts only short-lived owner tokens from `fp:token:create --admin`.
+
+## Claude Code
+
+Run these commands in your terminal:
+
+```bash
+export FP_TOKEN=<your-token>
 claude mcp add --transport http feedback-pilgrim https://feedback.example.com/mcp \
-  --header "Authorization: Bearer <your-token>"
+  --header "Authorization: Bearer ${FP_TOKEN}"
 ```
 
 ## Claude Desktop
@@ -44,7 +63,14 @@ Add the server to `claude_desktop_config.json`:
 
 ## Codex
 
-Codex connects through `mcp-remote`. Add the server to `~/.codex/config.toml`:
+Run these commands in your terminal:
+
+```bash
+export FP_TOKEN=<your-token>
+codex mcp add feedback-pilgrim --url https://feedback.example.com/mcp --bearer-token-env-var FP_TOKEN
+```
+
+An older Codex without `--url` connects through `mcp-remote`. Add the server to `~/.codex/config.toml`:
 
 ```toml
 [mcp_servers.feedback-pilgrim]

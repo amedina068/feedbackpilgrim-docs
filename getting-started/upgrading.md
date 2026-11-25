@@ -12,7 +12,33 @@ You can skip versions, for example from `0.1.0` to `0.3.0`. `php artisan migrate
 
 Make a backup before you upgrade. Read [Backups](../self-hosting/backups.md).
 
-## Upgrade with Docker
+## Upgrade the container
+
+Run the installer again. It downloads the new image and replaces the container. The data in the volume stays.
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/amedina068/feedbackpilgrim/main/install.sh | bash
+```
+
+To upgrade without the installer:
+
+1. Get the new image:
+
+   ```bash
+   docker pull ghcr.io/amedina068/feedbackpilgrim
+   ```
+
+2. Remove the old container. The volume stays:
+
+   ```bash
+   docker rm -f feedbackpilgrim
+   ```
+
+3. Start the container with the same `docker run` command as before.
+
+The container runs the new migrations when it starts. Run `docker exec feedbackpilgrim php artisan fp:doctor` after the upgrade.
+
+## Upgrade with Docker Compose
 
 1. Get the new code:
 

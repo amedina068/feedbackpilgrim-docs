@@ -33,15 +33,16 @@ The command asks for each value that you do not give as an option:
 |---|---|
 | `--name` | Required, 255 characters or fewer |
 | `--email` | Required, a lowercase email, unique |
-| `--password` | Required, 8 characters or more |
-| `--client-name` | The name of the first project. Required, 255 characters or fewer. |
+| `--project` | The name of the first project. 255 characters or fewer. |
 | `--subdomain` | The subdomain of the first project. Lowercase letters, digits and single hyphens. Not reserved, unique. |
 
-If the command cannot prompt, for example with `--no-interaction`, give all the options.
+The command needs no password. It shows a login link that works one time, for 60 minutes. After the login, the owner can set a password on the profile page. The old options `--password` and `--client-name` still work, but they are deprecated.
 
-The command stops with an error if the instance has a user already: `This instance already has users. fp:install only runs on an empty database.`
+If the instance has an owner with the same email, the command changes nothing, shows a new login link and exits with code 0. If the instance has users but this email is not an owner, the command stops with the error code `instance_has_owner` and exits with code 3.
 
 At the end, the command shows the URL of the dashboard and of the public site.
+
+For a script or an AI agent, add `--json --no-interaction`. With `--json`, the command prints one JSON object with a one-time `login_url`. With `--with-token=<name>`, it also makes an API token and returns the `claude mcp add` and `codex mcp add` commands. In this mode, a second run makes no change, returns `"status":"exists"` and exits with code 0. Read the `INSTALL.md` file of the app repository for the full agent procedure.
 
 The command also has two other modes:
 
@@ -59,7 +60,7 @@ php artisan fp:install --promote=person@example.com
 With Docker:
 
 ```bash
-docker compose exec web php artisan fp:install --promote=person@example.com
+docker exec feedbackpilgrim php artisan fp:install --promote=person@example.com
 ```
 
 ## Registration modes

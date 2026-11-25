@@ -30,13 +30,13 @@ Feedback Pilgrim is a Laravel 13 app on PHP 8.3, with Blade views, Vue 3 compone
 | Part | What it does |
 |---|---|
 | Web app | Serves the dashboard, the public sites, the widget endpoints, the REST API, the MCP server and the guides at `/documentation`. |
-| Database | MySQL. The Docker stack uses MySQL 8.4. The tests use SQLite in memory. |
-| Redis | Holds the cache, the sessions, the queue and the last-login times of the contacts. |
+| Database | SQLite in the `/data` volume by default. MySQL 8.4 is also supported. |
+| Redis | Optional. With Redis, it holds the cache, the sessions and the queue. Without Redis, the database holds them. |
 | Queue worker | Runs `php artisan queue:work`. It sends the emails, the webhooks and the Slack messages. |
 | Scheduler | Runs `php artisan schedule:work`. It starts the weekly reports every Monday. |
 | File storage | Holds the uploads (attachments, photos, avatars and logos) in `storage/app`. |
 
-Feedback Pilgrim supports MySQL only. Use MySQL 8.4, the version of the Docker stack. The tests use SQLite in memory. Do not use SQLite for an instance. PostgreSQL and MariaDB are not tested and not supported.
+Feedback Pilgrim supports SQLite and MySQL 8.4. SQLite is the default, and it is enough for one server. The Docker image runs the web app, the queue worker and the scheduler in one container. PostgreSQL and MariaDB are not tested and not supported.
 
 ## Two kinds of accounts
 

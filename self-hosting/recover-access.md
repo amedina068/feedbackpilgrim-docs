@@ -8,7 +8,7 @@ order: 6
 
 The "forgot password" form sends an email. If the instance has no mail, or if a user cannot read the email, use the commands on this page.
 
-With Docker, put `docker compose exec web` before each command, for example `docker compose exec web php artisan fp:user:list`.
+With Docker, put `docker exec feedbackpilgrim` before each command, for example `docker exec feedbackpilgrim php artisan fp:user:list`. With Docker Compose, use `docker compose exec web`.
 
 ## Find a user
 
@@ -51,6 +51,8 @@ While the instance has no user, show the setup URL again:
 ```bash
 php artisan fp:setup-url
 ```
+
+With Docker, the log of the container also shows the URL: `docker logs feedbackpilgrim`.
 
 If a user exists, the command says `An account already exists. The setup page is closed.`
 

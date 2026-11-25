@@ -1,6 +1,6 @@
 ---
 title: Backups
-description: What to back up on a Feedback Pilgrim instance, and how to back up and restore the Docker stack.
+description: What to back up on a Feedback Pilgrim instance, and how to back up and restore the /data volume or the MySQL stack.
 order: 2
 ---
 
@@ -12,6 +12,10 @@ Back up the database and the uploads each day. Keep the daily backups for 14 day
 
 ## What to back up
 
+With the default Docker install, back up one item: the `/data` volume. It holds the SQLite database, the generated secrets with `APP_KEY`, the uploads and the TLS certificates.
+
+With MySQL or without Docker, back up these items:
+
 | Item | Where | Why |
 |---|---|---|
 | The database | MySQL. The `mysql` volume with Docker. | All the records: users, projects, posts, contacts, tokens and settings. |
@@ -22,7 +26,50 @@ WARNING: Back up `APP_KEY` with the database. The app encrypts the identity secr
 
 Redis holds the cache, the sessions, the queued jobs and the last-login times of the contacts. If you lose Redis, the users must sign in again, and the queued jobs that did not run are lost. The `redis` volume keeps the data on disk.
 
-## Back up the Docker stack
+## Back up the `/data` volume
+
+These commands stop the container for a few seconds. A stopped container makes a consistent copy of the SQLite database.
+
+1. Stop the container:
+
+   ```bash
+   docker stop feedbackpilgrim
+   ```
+
+2. Copy the volume to a file in the current folder:
+
+   ```bash
+   docker run --rm -v feedbackpilgrim:/data -v "$PWD":/backup alpine \
+     tar czf /backup/feedbackpilgrim-$(date +%F).tar.gz -C /data .
+   ```
+
+3. Start the container:
+
+   ```bash
+   docker start feedbackpilgrim
+   ```
+
+4. Move the file to storage outside the server.
+
+## Restore the `/data` volume
+
+1. Remove the container and the volume:
+
+   ```bash
+   docker rm -f feedbackpilgrim
+   docker volume rm feedbackpilgrim
+   ```
+
+2. Copy the backup into a new volume:
+
+   ```bash
+   docker run --rm -v feedbackpilgrim:/data -v "$PWD":/backup alpine \
+     tar xzf /backup/feedbackpilgrim-2026-11-25.tar.gz -C /data
+   ```
+
+3. Start the container with the same command as before. The container reads `APP_KEY` from the volume.
+
+## Back up the Compose stack with MySQL
 
 Run these commands in the folder of the repository.
 
@@ -43,7 +90,7 @@ Run these commands in the folder of the repository.
 
 The `MYSQL_USER`, `MYSQL_PASSWORD` and `MYSQL_DATABASE` variables are set inside the `mysql` container from your `.env`.
 
-## Restore the Docker stack
+## Restore the Compose stack with MySQL
 
 1. Start the stack with the `.env` from the backup:
 
