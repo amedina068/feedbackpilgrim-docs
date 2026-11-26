@@ -10,7 +10,32 @@ This page lists the changes to Feedback Pilgrim that users can see. The newest d
 
 This page is about the Feedback Pilgrim app itself. To publish the release notes of your own project, read [Release notes](../using-feedback-pilgrim/release-notes.md).
 
-The release notes have no version numbers. For developers, `CHANGELOG.md` in the [app repository](https://github.com/amedina068/feedbackpilgrim/blob/main/CHANGELOG.md) lists the changes to the code for each version.
+A version heading marks the day of a release. The changes in the dated entries below a version heading are part of that version. For developers, `CHANGELOG.md` in the [app repository](https://github.com/amedina068/feedbackpilgrim/blob/main/CHANGELOG.md) lists the changes to the code for each version.
+
+## November 25, 2026: version 0.1.0
+
+Version 0.1.0 is the first public release of Feedback Pilgrim. The [GitHub release](https://github.com/amedina068/feedbackpilgrim/releases/tag/v0.1.0) lists all the changes. The Docker image is `ghcr.io/amedina068/feedbackpilgrim:0.1.0`. Read [Install with Docker](installation-docker.md).
+
+With this version, you can:
+
+- Collect feedback on boards, with posts, votes, comments, tags and stages. A project can have more than one board.
+- Give each project a public site on its own subdomain, with the posts, the roadmap, the release notes and the testimonials.
+- Sort the requests by revenue, with the MRR and the LTV of each contact.
+- Publish release notes, and tell the voters of a request when it ships.
+- Collect testimonials with a rating, and approve each testimonial before it shows.
+- Put the widget (`pilgrim.js`) in your app. It signs in your users with a publishable key and an HMAC `userHash`.
+- Connect other apps through the REST API, the signed webhooks and Slack. Connect AI assistants through the MCP server.
+- Get a weekly report each Monday.
+- Run Feedback Pilgrim on your own server with Docker, or without Docker with the example files in `deploy/`.
+- Choose open or closed registration, deactivate users, and recover access with the `fp:user:list` and `fp:user:password` commands.
+
+The changes of November 25, 2026:
+
+- A new install takes one command. If you open the setup page without the setup URL, the page tells you how to find it.
+- The Docker image starts with no settings. It uses SQLite, makes its own app key, and runs the queue worker and the scheduler in the same container. Set `APP_DOMAIN` to get automatic HTTPS from the built-in Caddy server.
+- An AI agent can install and run Feedback Pilgrim from the command line. Each `fp:` command has a `--json` mode. `fp:install` returns a one-time login link and an MCP token.
+- A new API token has scoped access (REST API, MCP read, MCP write) and an optional expiry date.
+- On the contact edit page, **Remove field** now removes only the selected custom field. Before, it also hid the next field, and a save lost its value.
 
 ## November 24, 2026
 
@@ -112,23 +137,3 @@ The release notes have no version numbers. For developers, `CHANGELOG.md` in the
 ## August 7, 2025
 
 - When a post moves to completed, Feedback Pilgrim can ask the author of the post for a testimonial by email. Turn on the testimonial automation in the settings, and write the text of the email. A contact who already gave a testimonial gets no email.
-
-## Version 0.1.0
-
-Version 0.1.0 is the first public release. It has no release date yet. `CHANGELOG.md` lists these features for it:
-
-- Feedback boards with posts, votes, comments, tags and stages. A project can have more than one board.
-- A public site for each project on its own subdomain, with the posts, the roadmap, the release notes and the testimonials.
-- Revenue weighting: the MRR and the LTV of each contact, and a sort of the requests by revenue.
-- Release notes, and a notification to the voters when a request ships.
-- Testimonials with a rating, and an approval step before a testimonial shows.
-- An embeddable widget (`pilgrim.js`) that signs in the users of your app with a publishable key and an HMAC `userHash`.
-- A versioned REST API with an OpenAPI document and a Postman collection.
-- An MCP server for AI agents, with tools for posts, comments, release notes, contacts, testimonials and tags.
-- Signed webhooks and Slack messages.
-- A weekly report (`fp:weekly`) that the scheduler starts each Monday.
-- Self-hosting with Docker Compose: web, queue worker, scheduler, MySQL and Redis.
-- A Docker image on GHCR for each release, for `linux/amd64` and `linux/arm64`, and `docker-compose.image.yml` to run it without a build.
-- A first-run setup page and the `fp:install` command to create the owner of the instance.
-- Open and closed registration modes, an owner role, user deactivation and account recovery commands (`fp:user:list`, `fp:user:password`).
-- Optional Mailgun, Amazon SES and Rollbar.
