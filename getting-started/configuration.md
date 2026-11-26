@@ -6,12 +6,17 @@ order: 4
 
 # Configuration
 
-Feedback Pilgrim reads its configuration from `.env`. The file `.env.example` in the repository explains each value. This page lists the values that an instance needs.
+Feedback Pilgrim reads its configuration from environment variables. The file `.env.example` in the repository explains each value. This page lists the values that an instance needs.
 
-After a change to `.env`:
+The Docker image needs no variable on localhost. On a server, `APP_DOMAIN` is the only required variable. The image makes `APP_KEY` on the first start and keeps it in the `/data` volume.
 
-- With Docker, run `docker compose up -d`. Compose makes the app containers again, and `web` caches the configuration again at start.
-- Without Docker, run `php artisan optimize` and `php artisan queue:restart`.
+To set a variable:
+
+- With `docker run`, add `-e NAME=value` or `--env-file <file>`. Then remove the container and start it again with the same volume.
+- With Docker Compose, put the value in `.env`. Then run `docker compose up -d`.
+- Without Docker, put the value in `.env`. Then run `php artisan optimize` and `php artisan queue:restart`.
+
+To see the values that the app uses, run `php artisan fp:status --json`. To find a wrong value, run `php artisan fp:doctor`.
 
 ## Domains
 
@@ -32,6 +37,8 @@ The app finds the project from the subdomain. The app host and `APP_DOMAIN` itse
 | `SESSION_SECURE_COOKIE` | `true` | Set `true` when `APP_URL` uses `https`. |
 | `SANCTUM_STATEFUL_DOMAINS` | `feedback.example.com,*.feedback.example.com` | The domains that can call the API with the session cookie. List the dashboard domain and the wildcard of the projects. |
 
+Set only `APP_DOMAIN`. The app derives the other four values from it: `APP_URL` is `https://<APP_DOMAIN>`, and the cookie and Sanctum values cover the domain and its wildcard. If you set `APP_URL`, the app derives the values from `APP_URL` instead. Set a value yourself only to change the derived value.
+
 The app trusts the `X-Forwarded-*` headers from any proxy. Read [Reverse proxy and TLS](../self-hosting/reverse-proxy-and-tls.md).
 
 ## Application
@@ -40,7 +47,7 @@ The app trusts the `X-Forwarded-*` headers from any proxy. Read [Reverse proxy a
 |---|---|---|
 | `APP_NAME` | `"Feedback Pilgrim"` | The name of the app in the pages and the emails. |
 | `APP_ENV` | `production` | The environment. Use `local` for development. |
-| `APP_KEY` | empty | The encryption key. Make it with `php artisan key:generate --show`. |
+| `APP_KEY` | empty | The encryption key. The Docker image makes it on the first start and keeps it in `/data`. Without Docker, make it with `php artisan key:generate --show`. |
 | `APP_DEBUG` | `false` | Shows error details. Keep it `false` in production. |
 | `REGISTRATION_ENABLED` | `false` | The default registration mode. `true` is open, `false` is closed. Read [Accounts and registration](../self-hosting/accounts-and-registration.md). |
 
@@ -57,7 +64,9 @@ WARNING: Make a backup of `APP_KEY`. The app uses it to encrypt the identity sec
 | `DB_USERNAME` | `feedbackpilgrim` |
 | `DB_PASSWORD` | empty |
 
-With Docker, Compose sets `DB_CONNECTION`, `DB_HOST` and `DB_PORT`. Read [Install with Docker](installation-docker.md#settings-that-compose-sets).
+The Docker image uses SQLite by default. The database file is in the `/data` volume. SQLite is enough for one server.
+
+To use MySQL, set `DB_CONNECTION=mysql` and the other `DB_*` values. The Compose file of the repository starts MySQL 8.4 with the `mysql` profile and sets `DB_HOST` and `DB_PORT`. Read [Install with Docker](installation-docker.md#mysql-and-redis).
 
 ## Redis, cache, sessions and queue
 
@@ -72,7 +81,7 @@ With Docker, Compose sets `DB_CONNECTION`, `DB_HOST` and `DB_PORT`. Read [Instal
 | `SESSION_DRIVER` | `redis` | The session store. |
 | `SESSION_LIFETIME` | `120` | The session lifetime in minutes. |
 
-The repository has no migration for a `sessions` table or a `jobs` table. Thus the `database` session driver and the `database` queue connection do not work without extra migrations.
+Redis is optional. Without Redis, the Docker image keeps the cache, the sessions and the queue in the database. The Compose file with the `mysql` profile also starts Redis 7.4.
 
 ## Logging
 
@@ -94,6 +103,13 @@ The uploads go to the `public` disk, that is `storage/app/public`, through the s
 The app does not support S3 storage for the uploads. The configuration has an `s3` disk, but the S3 driver needs the package `league/flysystem-aws-s3-v3`. The app does not include this package, so each read or write on the `s3` disk fails. Do not set `FILESYSTEM_DISK` or `MEDIA_DISK` to `s3`.
 
 ## Docker only
+
+| Variable | Default | What it does |
+|---|---|---|
+| `CADDY_ENABLED` | `auto` | `auto` starts Caddy with automatic HTTPS only when `APP_DOMAIN` is set. `true` always starts it. `false` never starts it, for example behind your own proxy. The Compose files set `false`. |
+| `ACME_EMAIL` | empty | Optional. Let's Encrypt sends notices about the certificates to this address. |
+
+## Docker Compose only
 
 | Variable | Default | What it does |
 |---|---|---|

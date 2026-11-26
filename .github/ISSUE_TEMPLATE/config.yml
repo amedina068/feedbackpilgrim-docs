@@ -1,5 +1,11 @@
 blank_issues_enabled: false
 contact_links:
-  - name: A problem with the app itself
+  - name: Question
+    url: https://github.com/amedina068/feedbackpilgrim/discussions/categories/q-a
+    about: Ask a question about the install, the configuration or the use of Feedback Pilgrim.
+  - name: Documentation
+    url: https://feedbackpilgrim.com/docs
+    about: Read the published documentation.
+  - name: Bug in the Feedback Pilgrim server
     url: https://github.com/amedina068/feedbackpilgrim/issues
     about: Read self-hosting/troubleshooting.md first. A bug in the app belongs in the app repository, not here.

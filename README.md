@@ -1,5 +1,8 @@
 # Feedback Pilgrim documentation
 
+[![CI](https://github.com/amedina068/feedbackpilgrim-docs/actions/workflows/ci.yml/badge.svg)](https://github.com/amedina068/feedbackpilgrim-docs/actions/workflows/ci.yml)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/amedina068/feedbackpilgrim-docs/badge)](https://scorecard.dev/viewer/?uri=github.com/amedina068/feedbackpilgrim-docs)
+
 This repository holds the documentation of Feedback Pilgrim, a self-hosted feedback board. Customers post feature requests, vote and comment on a public site for each project. The team sorts the requests by the revenue of the customers who ask for them.
 
 Each Markdown file is one page. The folder of a file is the section of the page.
@@ -136,6 +139,18 @@ The script then makes sure that:
 If the app checkout has a `vendor/` folder, the script reads the command list from `php artisan list`. If not, it reads the command signatures in `app/Console/Commands` and a fixed list of framework commands.
 
 The CI runs the same script on each push and pull request. The CI clones the public app repository `amedina068/feedbackpilgrim` and runs all the checks.
+
+## llms.txt for AI agents
+
+`llms.txt` lists each page with its description, in the order of the "Pages" list above. `llms-full.txt` holds the text of all the pages in one file. AI agents read them from the raw GitHub URLs.
+
+The script `scripts/build-llms.mjs` writes both files. After you add, move or change a page, run:
+
+```bash
+node scripts/build-llms.mjs
+```
+
+The CI runs `node scripts/build-llms.mjs --check`. The check fails if a file is not current.
 
 ## The MCP tools reference
 

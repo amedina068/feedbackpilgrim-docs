@@ -28,8 +28,9 @@ When you delete a board, the app moves its posts to the first other board of the
 ## Where a new post goes
 
 - A post from the dashboard, the REST API or the MCP server can name a board with `board_id`.
-- If a post names no board, the app puts it on the first board of the project.
-- A post from the public site goes to the first board of the project.
+- If a post names no board, the app puts it on the first public board of the project.
+- A post from the public site or the widget goes to the first public board of the project.
+- If no board of the project is public, the post goes to the first board. The post does not show on the public site. After a contact sends the post, the public site opens the list of posts.
 
 ## The kanban board of a board
 

@@ -8,10 +8,14 @@ order: 3
 
 Feedback Pilgrim needs two processes in addition to the web server:
 
-| Process | Command | Docker service |
-|---|---|---|
-| Queue worker | `php artisan queue:work --tries=3` | `queue` |
-| Scheduler | `php artisan schedule:work` | `scheduler` |
+| Process | Command |
+|---|---|
+| Queue worker | `php artisan queue:work --tries=3` |
+| Scheduler | `php artisan schedule:work` |
+
+The Docker image runs both processes in the same container as the web server. You do not start them yourself. `php artisan fp:status` shows the last heartbeat of the queue and the last run of the scheduler.
+
+Without Docker, run the two processes with systemd or Supervisor. Read [Run the processes without Docker](#run-the-processes-without-docker).
 
 ## What the queue runs
 
@@ -67,17 +71,14 @@ The [`deploy/`](https://github.com/amedina068/feedbackpilgrim/tree/main/deploy) 
 - [`systemd/feedbackpilgrim-scheduler.service`](https://github.com/amedina068/feedbackpilgrim/blob/main/deploy/systemd/feedbackpilgrim-scheduler.service)
 - [`supervisor/feedbackpilgrim.conf`](https://github.com/amedina068/feedbackpilgrim/blob/main/deploy/supervisor/feedbackpilgrim.conf)
 
-The app has one queue, `default`, on the `redis` connection. Run one worker. A job has 60 seconds, the default `--timeout` of `queue:work`. The examples give a stopped worker 70 seconds to finish its job.
+The app has one queue, `default`, on the connection that `QUEUE_CONNECTION` sets. Run one worker. A job has 60 seconds, the default `--timeout` of `queue:work`. The examples give a stopped worker 70 seconds to finish its job.
 
-## Health checks in Docker
+## Logs in Docker
 
-The `queue` service uses the health check `healthcheck-queue`. The `scheduler` service uses `healthcheck-schedule`. Both come from the base image. The two services start after `web` is healthy.
-
-To read the log of a service:
+The queue worker and the scheduler write to the log of the container:
 
 ```bash
-docker compose logs queue
-docker compose logs scheduler
+docker logs feedbackpilgrim
 ```
 
 ## Failed jobs
@@ -96,6 +97,6 @@ To try all of them again, run:
 php artisan queue:retry all
 ```
 
-With Docker, run the commands in the `web` service, for example `docker compose exec web php artisan queue:failed`.
+With Docker, run the commands in the container, for example `docker exec feedbackpilgrim php artisan queue:failed`.
 
 A webhook delivery that fails also shows in the delivery log on **Settings > Webhooks**.

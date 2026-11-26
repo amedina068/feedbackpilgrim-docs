@@ -30,13 +30,15 @@ const appPath = linksOnly ? null : process.env.FEEDBACKPILGRIM_APP_PATH || null;
 // Folders that hold no published pages.
 const SKIP_DIRS = new Set(['.git', '.github', 'node_modules', 'scripts']);
 // Files at the root that are not pages, so they need no front matter.
-const NON_PAGES = new Set(['README.md', 'CONTRIBUTING.md']);
+const NON_PAGES = new Set(['README.md', 'CONTRIBUTING.md', 'CODE_OF_CONDUCT.md', 'SECURITY.md', 'SUPPORT.md']);
 
 // Environment variables that the app does not read, but that a page names
 // on purpose. Each entry says who reads it.
 const EXTERNAL_ENV = new Map([
   ['CLOUDFLARE_API_TOKEN', 'read by Caddy in the reverse proxy example, not by the app'],
   ['FEEDBACKPILGRIM_APP_PATH', 'read by the scripts of this repository'],
+  ['FP_TOKEN', 'read by the shell of the MCP client in the lines of fp:mcp:connect, not by the app'],
+  ['COMPOSE_PROFILES', 'read by Docker Compose, not by the app'],
   // The SDK page names these variables. The SDKs and the apps of the reader
   // read them, not the Feedback Pilgrim app.
   ['FEEDBACKPILGRIM_URL', 'read by the Python and Ruby SDKs and by the Laravel config of the PHP SDK'],
