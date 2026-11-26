@@ -4270,12 +4270,12 @@ The package has a `prepare` script. npm runs it during the install, and it build
 
 | Runtime | Version | Test in CI |
 |---|---|---|
-| Node.js | 20, 22, 24 and later | Unit tests and a smoke test |
+| Node.js | 22.12 and later | Unit tests and a smoke test on Node.js 22 and 24 |
 | Bun | 1.x | Smoke test |
 | Deno | 2.x | Smoke test |
 | Cloudflare Workers | Current | None. The SDK uses only Web APIs that Workers supply. |
 
-The package has no runtime dependencies. It uses the global `fetch` and Web Crypto. It ships ESM and CommonJS, with types for both. The build tools need Node.js 22 or later.
+The package has no runtime dependencies. It uses the global `fetch` and Web Crypto. It ships ESM and CommonJS, with types for both. The package runs on Node.js 22.12 or later. The build tools need Node.js 22.18 or later.
 
 ### Quick start
 
