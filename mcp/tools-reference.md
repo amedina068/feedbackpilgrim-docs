@@ -78,7 +78,7 @@ Creates a post. The post has no author and is not published. Each call makes a n
 | `title` | string | Yes | The title, 255 characters or fewer. |
 | `content` | string | Yes | The text of the post. |
 | `status` | string | No | `pending` (default), `in_progress` or `completed`. |
-| `board_id` | integer | No | A board of the project. Default: the first board. |
+| `board_id` | integer | No | A board of the project. Default: the first public board, or the first board if no board is public. |
 | `tags` | integer array | No | Tag IDs of the project. |
 
 The result is the post with its tags and contact.
