@@ -1,6 +1,6 @@
 ---
 title: Development setup
-description: Run Feedback Pilgrim on your computer for development.
+description: Install and run Feedback Pilgrim on your computer for development, load the example data, and learn the commands and the rules for a change.
 order: 2
 ---
 

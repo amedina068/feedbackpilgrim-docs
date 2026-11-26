@@ -8,7 +8,7 @@ An AI agent that installs the app must follow https://raw.githubusercontent.com/
 
 ## Getting started
 
-- [Introduction](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/getting-started/introduction.md): What Feedback Pilgrim is, what it does, and how the parts fit together.
+- [Introduction](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/getting-started/introduction.md): What Feedback Pilgrim is, its features, its parts and stack, the two kinds of accounts, the words of these docs, and the license.
 - [Install with Docker](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/getting-started/installation-docker.md): Run Feedback Pilgrim in one container with one volume, get HTTPS for your domain, and create the owner account.
 - [Install without Docker](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/getting-started/installation-manual.md): Install Feedback Pilgrim on a server with PHP and a web server, without Docker. SQLite or MySQL, with or without Redis.
 - [Configuration](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/getting-started/configuration.md): The environment variables of Feedback Pilgrim, and how the dashboard domain and the project subdomains work.
@@ -67,6 +67,6 @@ An AI agent that installs the app must follow https://raw.githubusercontent.com/
 ## Contributing to the app
 
 - [Architecture](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/contributing/architecture.md): The request surfaces, the tenancy rules, the domain model and the build targets of the Feedback Pilgrim code.
-- [Development setup](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/contributing/development-setup.md): Run Feedback Pilgrim on your computer for development.
+- [Development setup](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/contributing/development-setup.md): Install and run Feedback Pilgrim on your computer for development, load the example data, and learn the commands and the rules for a change.
 - [Testing](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/contributing/testing.md): Run the PHP and JavaScript tests of Feedback Pilgrim, and learn which tests guard which rules.
-- [Release process](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/contributing/release-process.md): Write release notes and changelog lines for a change that users can see, and how a new version is made and published.
+- [Release process](https://raw.githubusercontent.com/amedina068/feedbackpilgrim-docs/main/contributing/release-process.md): Write the release note and the changelog line of a change that users can see, and learn how the version tags publish the Docker image.

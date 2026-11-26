@@ -1,6 +1,6 @@
 ---
 title: Release process
-description: Write release notes and changelog lines for a change that users can see, and how a new version is made and published.
+description: Write the release note and the changelog line of a change that users can see, and learn how the version tags publish the Docker image.
 order: 4
 ---
 
