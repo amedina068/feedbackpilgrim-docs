@@ -649,6 +649,10 @@ This page is about the Feedback Pilgrim app itself. To publish the release notes
 
 A version heading marks the day of a release. The changes in the dated entries below a version heading are part of that version. For developers, `CHANGELOG.md` in the [app repository](https://github.com/amedina068/feedbackpilgrim/blob/main/CHANGELOG.md) lists the changes to the code for each version.
 
+## November 26, 2026
+
+- A post from the public site or the widget went to a private board when that board came first in the list. The post then did not show on the public site. Now a post without a board goes to the first public board. If no board is public, the post goes to the first board, and the contact sees the list of posts.
+
 ## November 25, 2026: version 0.1.0
 
 Version 0.1.0 is the first public release of Feedback Pilgrim. The [GitHub release](https://github.com/amedina068/feedbackpilgrim/releases/tag/v0.1.0) lists all the changes. The Docker image is `ghcr.io/amedina068/feedbackpilgrim:0.1.0`. Read [Install with Docker](installation-docker.md).
@@ -897,8 +901,9 @@ When you delete a board, the app moves its posts to the first other board of the
 ## Where a new post goes
 
 - A post from the dashboard, the REST API or the MCP server can name a board with `board_id`.
-- If a post names no board, the app puts it on the first board of the project.
-- A post from the public site goes to the first board of the project.
+- If a post names no board, the app puts it on the first public board of the project.
+- A post from the public site or the widget goes to the first public board of the project.
+- If no board of the project is public, the post goes to the first board. The post does not show on the public site. After a contact sends the post, the public site opens the list of posts.
 
 ## The kanban board of a board
 
@@ -2486,7 +2491,7 @@ POST /posts
 | `title` | string | Yes | Maximum 255 characters |
 | `content` | string | Yes | |
 | `status` | string | No | `pending` (default), `in_progress` or `completed` |
-| `board_id` | integer | No | A board of the project. Default: the first board. |
+| `board_id` | integer | No | A board of the project. Default: the first public board, or the first board if no board is public. |
 | `tags` | integer array | No | Tag IDs of the project |
 
 `201` returns the new post.
@@ -5237,7 +5242,7 @@ Creates a post. The post has no author and is not published. Each call makes a n
 | `title` | string | Yes | The title, 255 characters or fewer. |
 | `content` | string | Yes | The text of the post. |
 | `status` | string | No | `pending` (default), `in_progress` or `completed`. |
-| `board_id` | integer | No | A board of the project. Default: the first board. |
+| `board_id` | integer | No | A board of the project. Default: the first public board, or the first board if no board is public. |
 | `tags` | integer array | No | Tag IDs of the project. |
 
 The result is the post with its tags and contact.

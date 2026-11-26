@@ -250,7 +250,7 @@ POST /posts
 | `title` | string | Yes | Maximum 255 characters |
 | `content` | string | Yes | |
 | `status` | string | No | `pending` (default), `in_progress` or `completed` |
-| `board_id` | integer | No | A board of the project. Default: the first board. |
+| `board_id` | integer | No | A board of the project. Default: the first public board, or the first board if no board is public. |
 | `tags` | integer array | No | Tag IDs of the project |
 
 `201` returns the new post.

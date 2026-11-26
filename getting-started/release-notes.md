@@ -12,6 +12,10 @@ This page is about the Feedback Pilgrim app itself. To publish the release notes
 
 A version heading marks the day of a release. The changes in the dated entries below a version heading are part of that version. For developers, `CHANGELOG.md` in the [app repository](https://github.com/amedina068/feedbackpilgrim/blob/main/CHANGELOG.md) lists the changes to the code for each version.
 
+## November 26, 2026
+
+- A post from the public site or the widget went to a private board when that board came first in the list. The post then did not show on the public site. Now a post without a board goes to the first public board. If no board is public, the post goes to the first board, and the contact sees the list of posts.
+
 ## November 25, 2026: version 0.1.0
 
 Version 0.1.0 is the first public release of Feedback Pilgrim. The [GitHub release](https://github.com/amedina068/feedbackpilgrim/releases/tag/v0.1.0) lists all the changes. The Docker image is `ghcr.io/amedina068/feedbackpilgrim:0.1.0`. Read [Install with Docker](installation-docker.md).
